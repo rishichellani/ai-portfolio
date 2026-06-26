@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rishi Chellani — AI Enablement Lead</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --teal: #0ea5e9;
+    --teal-dark: #0284c7;
+    --teal-glow: #38bdf8;
+    --navy: #0f172a;
+    --navy-mid: #1e293b;
+    --navy-light: #334155;
+    --slate: #64748b;
+    --slate-light: #94a3b8;
+    --white: #ffffff;
+    --off-white: #f8fafc;
+    --card-border: rgba(148,163,184,0.15);
+    --section-light: #f8fafc;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--white);
+    color: #1e293b;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(15,23,42,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 0 2rem;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-brand {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: 0.02em;
+  }
+
+  .nav-brand span { color: var(--teal); }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--slate-light);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--teal); }
+
+  /* ── HERO ── */
+  #hero {
+    background: linear-gradient(145deg, #0f172a 0%, #1e293b 50%, #0f2a3a 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 100px 2rem 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #hero::before {
+    content: '';
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(14,165,233,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  #hero::after {
+    content: '';
+    position: absolute;
+    bottom: -150px; left: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(14,165,233,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(14,165,233,0.12);
+    border: 1px solid rgba(14,165,233,0.3);
+    border-radius: 100px;
+    padding: 0.375rem 1rem;
+    font-size: 0.8125rem;
+    color: var(--teal-glow);
+    margin-bottom: 2rem;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+  }
+
+  .hero-badge::before { content: '●'; font-size: 0.5rem; }
+
+  h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.5rem;
+  }
+
+  h1 span { color: var(--teal); }
+
+  .hero-title {
+    font-size: clamp(1rem, 2.5vw, 1.375rem);
+    color: var(--slate-light);
+    font-weight: 400;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.01em;
+  }
+
+  .hero-tagline {
+    font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+    color: var(--white);
+    font-weight: 500;
+    max-width: 680px;
+    margin-bottom: 2.5rem;
+    line-height: 1.4;
+  }
+
+  .hero-tagline em {
+    color: var(--teal);
+    font-style: normal;
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+  }
+
+  .hero-meta-item {
+    font-size: 0.875rem;
+    color: var(--slate-light);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--teal);
+    color: var(--white);
+    text-decoration: none;
+    padding: 0.75rem 1.75rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .btn-primary:hover {
+    background: var(--teal-dark);
+    transform: translateY(-1px);
+  }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    color: var(--white);
+    text-decoration: none;
+    padding: 0.75rem 1.75rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.9375rem;
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: border-color 0.2s, transform 0.15s;
+  }
+
+  .btn-outline:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+    transform: translateY(-1px);
+  }
+
+  /* ── SECTIONS ── */
+  section { padding: 6rem 2rem; }
+
+  .section-inner { max-width: 1000px; margin: 0 auto; }
+
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 0.75rem;
+  }
+
+  h2 {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  .section-subtitle {
+    font-size: 1.0625rem;
+    color: var(--slate);
+    max-width: 580px;
+    margin-bottom: 3rem;
+  }
+
+  /* ── WHAT I DO ── */
+  #what-i-do { background: var(--section-light); }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .card {
+    background: var(--white);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 1.75rem;
+    transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(14,165,233,0.1);
+    border-color: rgba(14,165,233,0.3);
+  }
+
+  .card-icon {
+    font-size: 2.25rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .card h3 {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 0.625rem;
+  }
+
+  .card p {
+    font-size: 0.875rem;
+    color: var(--slate);
+    line-height: 1.65;
+  }
+
+  /* ── AI IN 5 ── */
+  #ai-in-5 {
+    background: var(--navy);
+    position: relative;
+    overflow: hidden;
+  }
+
+  #ai-in-5::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(14,165,233,0.1) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  #ai-in-5 .section-label { color: var(--teal-glow); }
+  #ai-in-5 h2 { color: var(--white); }
+  #ai-in-5 .section-subtitle { color: var(--slate-light); }
+
+  .ai5-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .ai5-callout {
+    background: rgba(14,165,233,0.08);
+    border: 1px solid rgba(14,165,233,0.2);
+    border-radius: 16px;
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ai5-callout::before {
+    content: '"AI in 5"';
+    position: absolute;
+    top: -20px; right: -10px;
+    font-size: 8rem;
+    font-weight: 900;
+    color: rgba(14,165,233,0.06);
+    line-height: 1;
+    pointer-events: none;
+    font-family: system-ui, sans-serif;
+    white-space: nowrap;
+  }
+
+  .ai5-big-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 0.75rem;
+  }
+
+  .ai5-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--white);
+    margin-bottom: 1rem;
+    line-height: 1.15;
+  }
+
+  .ai5-desc {
+    color: var(--slate-light);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+
+  .ai5-stat-row {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .ai5-stat {
+    text-align: center;
+  }
+
+  .ai5-stat-num {
+    font-size: 1.875rem;
+    font-weight: 800;
+    color: var(--teal);
+    display: block;
+    line-height: 1;
+  }
+
+  .ai5-stat-label {
+    font-size: 0.75rem;
+    color: var(--slate-light);
+    margin-top: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .ai5-details h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 1rem;
+  }
+
+  .dept-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+    margin-bottom: 2rem;
+  }
+
+  .dept-tag {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--slate-light);
+    border-radius: 100px;
+    padding: 0.3rem 0.875rem;
+    font-size: 0.8125rem;
+  }
+
+  .tool-pill-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+  }
+
+  .tool-pill {
+    background: rgba(14,165,233,0.12);
+    border: 1px solid rgba(14,165,233,0.25);
+    color: var(--teal-glow);
+    border-radius: 100px;
+    padding: 0.35rem 0.9rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+
+  /* ── TOOLS ── */
+  #tools { background: var(--section-light); }
+
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+
+  .tool-card {
+    background: var(--white);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 1.5rem 1.25rem;
+    text-align: center;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    cursor: default;
+  }
+
+  .tool-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(14,165,233,0.35);
+    box-shadow: 0 8px 28px rgba(14,165,233,0.1);
+  }
+
+  .tool-card .tool-emoji {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+
+  .tool-card .tool-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 0.25rem;
+  }
+
+  .tool-card .tool-maker {
+    font-size: 0.75rem;
+    color: var(--slate-light);
+  }
+
+  /* ── IMPACT ── */
+  #impact { background: var(--white); }
+
+  .impact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .impact-card {
+    background: var(--navy);
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .impact-card::before {
+    content: '';
+    position: absolute;
+    top: -50px; right: -50px;
+    width: 150px; height: 150px;
+    background: radial-gradient(circle, rgba(14,165,233,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .impact-num {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--teal);
+    line-height: 1;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .impact-label {
+    font-size: 0.9375rem;
+    color: var(--slate-light);
+    font-weight: 400;
+  }
+
+  /* ── CONNECT ── */
+  #connect {
+    background: linear-gradient(145deg, #0f172a 0%, #0f2a3a 100%);
+    text-align: center;
+  }
+
+  #connect h2 { color: var(--white); }
+  #connect .section-subtitle { color: var(--slate-light); margin-left: auto; margin-right: auto; }
+
+  .connect-cards {
+    display: flex;
+    justify-content: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    margin-top: 2.5rem;
+  }
+
+  .connect-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 1.75rem 2.5rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-width: 260px;
+    transition: border-color 0.2s, background 0.2s, transform 0.2s;
+  }
+
+  .connect-card:hover {
+    border-color: var(--teal);
+    background: rgba(14,165,233,0.08);
+    transform: translateY(-2px);
+  }
+
+  .connect-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+
+  .connect-label {
+    font-size: 0.75rem;
+    color: var(--slate-light);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .connect-value {
+    font-size: 0.9375rem;
+    color: var(--white);
+    font-weight: 500;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #080f1e;
+    text-align: center;
+    padding: 2rem;
+    font-size: 0.8125rem;
+    color: var(--slate);
+  }
+
+  footer span { color: var(--teal); }
+
+  /* ── SCROLL ANIMATIONS ── */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .fade-in-delay-1 { transition-delay: 0.1s; }
+  .fade-in-delay-2 { transition-delay: 0.2s; }
+  .fade-in-delay-3 { transition-delay: 0.3s; }
+  .fade-in-delay-4 { transition-delay: 0.4s; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 700px) {
+    nav { padding: 0 1.25rem; }
+    .nav-links { display: none; }
+    section { padding: 4rem 1.25rem; }
+    .ai5-layout { grid-template-columns: 1fr; gap: 2rem; }
+    .hero-meta { gap: 1rem; }
+    .connect-card { min-width: unset; width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">Rishi <span>Chellani</span></div>
+  <ul class="nav-links">
+    <li><a href="#what-i-do">What I Do</a></li>
+    <li><a href="#ai-in-5">AI in 5</a></li>
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#impact">Impact</a></li>
+    <li><a href="#connect">Connect</a></li>
+    <li><a href="f1.html">F1 Dashboard</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">AI Enablement Lead · Irvine, CA</div>
+    <h1>Rishi <span>Chellani</span></h1>
+    <p class="hero-title">AI Enablement Lead &amp; Business Process Strategist</p>
+    <p class="hero-tagline">
+      I bridge the gap between <em>cutting-edge AI</em> and the people who need it most —
+      turning complex tools into everyday workflows that <em>actually get used</em>.
+    </p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">🎓 BS CS · MS MIS</div>
+      <div class="hero-meta-item">📅 18+ Years Experience</div>
+      <div class="hero-meta-item">🏢 Former Adeia Inc. (NASDAQ: ADEA)</div>
+    </div>
+    <div class="hero-ctas">
+      <a href="#connect" class="btn-primary">Let's Connect →</a>
+      <a href="#ai-in-5" class="btn-outline">See Featured Work</a>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT I DO -->
+<section id="what-i-do">
+  <div class="section-inner">
+    <p class="section-label">What I Do</p>
+    <h2>AI that works for everyone,<br>not just engineers</h2>
+    <p class="section-subtitle">
+      I help organizations move from AI curiosity to AI capability — designing programs,
+      tools, and workflows that stick.
+    </p>
+    <div class="cards-grid">
+      <div class="card fade-in">
+        <span class="card-icon">🎓</span>
+        <h3>Training &amp; Enablement</h3>
+        <p>Design and deliver AI adoption programs for non-technical teams across finance, legal, operations, and beyond.</p>
+      </div>
+      <div class="card fade-in fade-in-delay-1">
+        <span class="card-icon">⚙️</span>
+        <h3>Workflow Automation</h3>
+        <p>Build internal AI tools and automations that eliminate repetitive work and surface insights faster.</p>
+      </div>
+      <div class="card fade-in fade-in-delay-2">
+        <span class="card-icon">🗺️</span>
+        <h3>Use Case Discovery</h3>
+        <p>Identify high-impact AI opportunities across departments — from FP&amp;A modeling to contract analysis.</p>
+      </div>
+      <div class="card fade-in fade-in-delay-3">
+        <span class="card-icon">📚</span>
+        <h3>Enablement Content</h3>
+        <p>Create videos, guides, prompt libraries, and playbooks that make AI approachable and immediately usable.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AI IN 5 -->
+<section id="ai-in-5">
+  <div class="section-inner">
+    <div class="ai5-layout">
+      <div class="ai5-callout fade-in">
+        <p class="ai5-big-label">Featured Program</p>
+        <h2 class="ai5-title">AI in 5™</h2>
+        <p class="ai5-desc">
+          A video series I created and ran at Adeia — short, focused episodes helping
+          non-technical colleagues adopt AI tools with confidence. Five minutes. Real tools. Immediate value.
+        </p>
+        <div class="ai5-stat-row">
+          <div class="ai5-stat">
+            <span class="ai5-stat-num">6</span>
+            <div class="ai5-stat-label">Departments<br>Reached</div>
+          </div>
+          <div class="ai5-stat">
+            <span class="ai5-stat-num">4</span>
+            <div class="ai5-stat-label">AI Tools<br>Covered</div>
+          </div>
+          <div class="ai5-stat">
+            <span class="ai5-stat-num">~5</span>
+            <div class="ai5-stat-label">Min Per<br>Episode</div>
+          </div>
+        </div>
+      </div>
+      <div class="ai5-details fade-in fade-in-delay-1">
+        <div style="margin-bottom: 2rem;">
+          <h3>🏢 Departments Reached</h3>
+          <div class="dept-list">
+            <span class="dept-tag">📊 Accounting</span>
+            <span class="dept-tag">📈 FP&amp;A</span>
+            <span class="dept-tag">💻 IT</span>
+            <span class="dept-tag">📣 Investor Relations</span>
+            <span class="dept-tag">🧾 Tax</span>
+          </div>
+        </div>
+        <div style="margin-bottom: 2rem;">
+          <h3>🤖 Tools Covered</h3>
+          <div class="tool-pill-list">
+            <span class="tool-pill">Claude</span>
+            <span class="tool-pill">ChatGPT</span>
+            <span class="tool-pill">Cowork</span>
+            <span class="tool-pill">Hebbia</span>
+          </div>
+        </div>
+        <div>
+          <h3>🎯 Mission</h3>
+          <p style="color: #94a3b8; font-size: 0.9rem; line-height: 1.7;">
+            Democratize AI adoption across the organization — so that every colleague,
+            regardless of technical background, can leverage AI in their daily work.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS & EXPERTISE -->
+<section id="tools">
+  <div class="section-inner">
+    <p class="section-label">Tools &amp; Expertise</p>
+    <h2>The AI stack I enable</h2>
+    <p class="section-subtitle">
+      I don't just use these tools — I teach others how to use them effectively for real business outcomes.
+    </p>
+    <div class="tools-grid">
+      <div class="tool-card fade-in">
+        <span class="tool-emoji">🟠</span>
+        <div class="tool-name">Claude</div>
+        <div class="tool-maker">Anthropic</div>
+      </div>
+      <div class="tool-card fade-in fade-in-delay-1">
+        <span class="tool-emoji">🟢</span>
+        <div class="tool-name">ChatGPT</div>
+        <div class="tool-maker">OpenAI</div>
+      </div>
+      <div class="tool-card fade-in fade-in-delay-2">
+        <span class="tool-emoji">🔵</span>
+        <div class="tool-name">Cowork</div>
+        <div class="tool-maker">Anthropic</div>
+      </div>
+      <div class="tool-card fade-in fade-in-delay-3">
+        <span class="tool-emoji">⚡</span>
+        <div class="tool-name">Hebbia</div>
+        <div class="tool-maker">Multi-doc AI</div>
+      </div>
+      <div class="tool-card fade-in">
+        <span class="tool-emoji">💻</span>
+        <div class="tool-name">Claude Code</div>
+        <div class="tool-maker">Anthropic</div>
+      </div>
+      <div class="tool-card fade-in fade-in-delay-1">
+        <span class="tool-emoji">🌐</span>
+        <div class="tool-name">Platform.claude</div>
+        <div class="tool-maker">Agent Dev</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IMPACT -->
+<section id="impact">
+  <div class="section-inner">
+    <p class="section-label">Impact Highlights</p>
+    <h2>Results that speak<br>for themselves</h2>
+    <p class="section-subtitle">
+      From a publicly traded IP licensing company to cross-functional AI programs — here's the scorecard.
+    </p>
+    <div class="impact-grid">
+      <div class="impact-card fade-in">
+        <span class="impact-num">18+</span>
+        <div class="impact-label">Years of cross-functional experience in finance, tech &amp; entrepreneurship</div>
+      </div>
+      <div class="impact-card fade-in fade-in-delay-1">
+        <span class="impact-num">6</span>
+        <div class="impact-label">Departments enabled with AI tools through the "AI in 5" program</div>
+      </div>
+      <div class="impact-card fade-in fade-in-delay-2">
+        <span class="impact-num">6+</span>
+        <div class="impact-label">AI platforms trained on — from writing assistants to agentic coding tools</div>
+      </div>
+    </div>
+    <div class="cards-grid" style="margin-top: 1.25rem;">
+      <div class="card fade-in">
+        <span class="card-icon">🏛️</span>
+        <h3>Enterprise Background</h3>
+        <p>Hands-on experience at Adeia Inc. (NASDAQ: ADEA), a publicly traded IP licensing company, driving AI adoption across corporate functions.</p>
+      </div>
+      <div class="card fade-in fade-in-delay-1">
+        <span class="card-icon">🎓</span>
+        <h3>Dual-Degree Foundation</h3>
+        <p>BS in Computer Science + MS in Management Information Systems — the rare combination of technical depth and business strategy.</p>
+      </div>
+      <div class="card fade-in fade-in-delay-2">
+        <span class="card-icon">🚀</span>
+        <h3>Entrepreneurial Edge</h3>
+        <p>Entrepreneurial background that fuels a bias toward action, rapid experimentation, and building things that actually work in practice.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONNECT -->
+<section id="connect">
+  <div class="section-inner">
+    <p class="section-label" style="color: var(--teal-glow);">Let's Connect</p>
+    <h2 style="color: var(--white);">Ready to bring AI enablement<br>to your organization?</h2>
+    <p class="section-subtitle" style="color: var(--slate-light); text-align: center;">
+      I'm actively exploring Head of AI Enablement, AI Program Manager, and AI Enablement Manager roles.
+      Let's talk about what we could build together.
+    </p>
+    <div class="connect-cards">
+      <a href="https://www.linkedin.com/in/rishi-chellani-38393b6/" target="_blank" class="connect-card">
+        <span class="connect-icon">💼</span>
+        <div>
+          <span class="connect-label">LinkedIn</span>
+          <span class="connect-value">linkedin.com/in/rishi-chellani</span>
+        </div>
+      </a>
+      <a href="mailto:rishi.chellani@gmail.com" class="connect-card">
+        <span class="connect-icon">✉️</span>
+        <div>
+          <span class="connect-label">Email</span>
+          <span class="connect-value">rishi.chellani@gmail.com</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 <span>Rishi Chellani</span> · AI Enablement Lead · Irvine, CA</p>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver(
+    (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+    { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+  );
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
