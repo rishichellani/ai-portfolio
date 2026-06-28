@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Readiness Assessment</title>
+<meta name="description" content="A professional self-assessment tool to discover where your organization stands on its AI journey.">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  :root{
+    --bg:#0f1117;
+    --card:#1a1d2e;
+    --card-2:#212540;
+    --accent:#00BFA6;
+    --accent-dim:rgba(0,191,166,.15);
+    --text:#e8eaf0;
+    --muted:#8a90a6;
+    --border:#2a2e44;
+    --green:#22c55e;
+    --yellow:#eab308;
+    --red:#ef4444;
+    --shadow:0 10px 40px rgba(0,0,0,.4);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    min-height:100%;
+    background-image:radial-gradient(900px 500px at 80% -10%,rgba(0,191,166,.10),transparent 60%),radial-gradient(700px 400px at 0% 110%,rgba(0,191,166,.06),transparent 55%);
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:32px 20px 80px}
+
+  /* Screens */
+  .screen{display:none;animation:fade .45s ease both}
+  .screen.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+  /* Landing */
+  .hero{text-align:center;padding:48px 0 8px}
+  .badge-pill{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--accent-dim);color:var(--accent);
+    border:1px solid rgba(0,191,166,.3);
+    padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;
+    letter-spacing:.02em;margin-bottom:24px;
+  }
+  h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-.02em;line-height:1.1}
+  .hero .sub{color:var(--muted);font-size:clamp(1rem,2.4vw,1.25rem);max-width:620px;margin:18px auto 0}
+  .meta-line{color:var(--muted);font-size:14px;margin-top:28px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .meta-line span{display:inline-flex;align-items:center;gap:6px}
+  .meta-line .dot{color:var(--accent)}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    background:var(--accent);color:#04201c;font-weight:700;font-size:16px;
+    border:none;border-radius:12px;padding:15px 34px;cursor:pointer;
+    transition:transform .15s ease,box-shadow .2s ease,background .2s ease;
+    box-shadow:0 6px 24px rgba(0,191,166,.28);
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,191,166,.4)}
+  .btn:active{transform:translateY(0)}
+  .btn:disabled{background:#2a2e44;color:#5b6178;cursor:not-allowed;box-shadow:none;transform:none}
+  .btn-ghost{
+    background:transparent;color:var(--text);border:1px solid var(--border);
+    box-shadow:none;font-weight:600;
+  }
+  .btn-ghost:hover{background:var(--card-2);border-color:var(--accent);box-shadow:none}
+  .cta-row{margin-top:38px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .byline{margin-top:40px;color:var(--muted);font-size:14px}
+  .byline a{color:var(--accent);text-decoration:none;font-weight:600}
+  .byline a:hover{text-decoration:underline}
+
+  .feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-top:54px}
+  .feature{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;text-align:left}
+  .feature .fi{font-size:24px}
+  .feature h4{margin:10px 0 4px;font-size:15px}
+  .feature p{color:var(--muted);font-size:13px}
+
+  /* Section header */
+  .sec-head{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+  .sec-icon{
+    width:56px;height:56px;flex:none;border-radius:14px;
+    background:var(--accent-dim);border:1px solid rgba(0,191,166,.25);
+    display:flex;align-items:center;justify-content:center;font-size:28px;
+  }
+  .sec-head h2{font-size:clamp(1.4rem,3.2vw,2rem);font-weight:800;letter-spacing:-.01em}
+  .sec-head .sec-sub{color:var(--muted);font-size:14px}
+  .progress-meta{display:flex;justify-content:space-between;align-items:center;margin:26px 0 8px;color:var(--muted);font-size:13px;font-weight:600}
+  .progress-track{height:8px;background:#22263c;border-radius:999px;overflow:hidden}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),#3fe0c8);border-radius:999px;width:0;transition:width .5s cubic-bezier(.4,0,.2,1)}
+
+  /* Questions */
+  .q{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px 22px 14px;margin-top:18px;transition:border-color .2s ease}
+  .q.answered{border-color:rgba(0,191,166,.4)}
+  .q-text{font-size:16px;font-weight:600;margin-bottom:16px;display:flex;gap:10px}
+  .q-num{color:var(--accent);font-weight:800}
+  .scale{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  .opt{cursor:pointer}
+  .opt input{position:absolute;opacity:0;pointer-events:none}
+  .opt .box{
+    border:1px solid var(--border);border-radius:11px;padding:12px 8px;text-align:center;
+    transition:all .18s ease;height:100%;display:flex;flex-direction:column;align-items:center;gap:6px;
+    background:#161929;
+  }
+  .opt .num{font-size:20px;font-weight:800;color:var(--muted);transition:color .18s ease}
+  .opt .lbl{font-size:11px;color:var(--muted);line-height:1.25;min-height:30px;display:flex;align-items:center}
+  .opt:hover .box{border-color:var(--accent);background:var(--card-2)}
+  .opt input:checked + .box{border-color:var(--accent);background:var(--accent-dim);box-shadow:0 0 0 1px var(--accent) inset}
+  .opt input:checked + .box .num{color:var(--accent)}
+  .opt input:checked + .box .lbl{color:var(--text)}
+  .opt input:focus-visible + .box{outline:2px solid var(--accent);outline-offset:2px}
+
+  .nav-row{display:flex;justify-content:space-between;gap:12px;margin-top:28px}
+
+  /* Results */
+  .results-head{text-align:center;padding:10px 0 6px}
+  .score-ring-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;margin:10px 0 8px}
+  .ring{position:relative;width:200px;height:200px}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .score-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .ring .score-num b{font-size:54px;font-weight:800;line-height:1}
+  .ring .score-num small{color:var(--muted);font-size:13px;margin-top:2px}
+  .maturity{
+    display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:18px;
+    padding:10px 20px;border-radius:999px;border:1px solid var(--border);margin-top:8px;
+  }
+  .maturity .desc{display:block;color:var(--muted);font-size:13px;font-weight:500;margin-top:6px;text-align:center}
+
+  .panel{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:24px;margin-top:22px}
+  .panel h3{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:16px;font-weight:700}
+  .chart-box{position:relative;height:360px;max-width:520px;margin:0 auto}
+
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+  .dim-card{background:#161929;border:1px solid var(--border);border-radius:14px;padding:18px}
+  .dim-card .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+  .dim-card .name{font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px}
+  .dim-card .pct{font-size:24px;font-weight:800}
+  .dim-card .bar{height:8px;background:#22263c;border-radius:999px;overflow:hidden;margin:12px 0 10px}
+  .dim-card .bar i{display:block;height:100%;border-radius:999px;width:0;transition:width 1s cubic-bezier(.4,0,.2,1)}
+  .status{font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase}
+
+  .rec{background:#161929;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:12px;padding:18px 20px;margin-top:12px}
+  .rec h4{font-size:16px;display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .rec p{color:#c2c7da;font-size:14px}
+  .all-strong{text-align:center;color:var(--muted);padding:24px}
+  .all-strong .big{font-size:40px}
+
+  .cta-final{text-align:center;background:linear-gradient(180deg,rgba(0,191,166,.10),rgba(0,191,166,.02));border:1px solid rgba(0,191,166,.25)}
+  .cta-final h3{color:var(--text);font-size:20px;text-transform:none;letter-spacing:0}
+  .cta-final p{color:var(--muted);max-width:520px;margin:8px auto 20px}
+
+  .share-out{margin-top:14px;width:100%;background:#0c0e16;border:1px solid var(--border);border-radius:12px;color:#c2c7da;font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;padding:14px;min-height:120px;resize:vertical;white-space:pre-wrap;display:none}
+
+  .toast{
+    position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);
+    background:var(--accent);color:#04201c;font-weight:700;padding:12px 22px;border-radius:10px;
+    opacity:0;pointer-events:none;transition:all .3s ease;box-shadow:var(--shadow);z-index:50;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .footer{text-align:center;color:var(--muted);font-size:13px;margin-top:48px}
+  .footer a{color:var(--accent);text-decoration:none}
+  .footer a:hover{text-decoration:underline}
+
+  @media (max-width:560px){
+    .scale{grid-template-columns:repeat(5,1fr);gap:5px}
+    .opt .box{padding:9px 3px}
+    .opt .num{font-size:17px}
+    .opt .lbl{display:none}
+    .scale.with-legend + .legend{display:flex}
+    .sec-icon{width:48px;height:48px;font-size:24px}
+    .ring{width:170px;height:170px}
+    .ring .score-num b{font-size:46px}
+  }
+  .legend{display:none;justify-content:space-between;color:var(--muted);font-size:11px;margin-top:8px;padding:0 2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- SCREEN 1: LANDING -->
+  <section class="screen active" id="screen-intro">
+    <div class="hero">
+      <span class="badge-pill">⚡ AI Readiness Assessment</span>
+      <h1>Where does your organization<br>stand on AI?</h1>
+      <p class="sub">Discover where your organization stands on its AI journey — and what to do next.</p>
+      <div class="meta-line">
+        <span><span class="dot">●</span> 5 minutes</span>
+        <span><span class="dot">●</span> 20 questions</span>
+        <span><span class="dot">●</span> Free</span>
+      </div>
+      <div class="cta-row">
+        <button class="btn" onclick="App.start()">Start Assessment →</button>
+      </div>
+      <div class="feature-grid">
+        <div class="feature"><div class="fi">📊</div><h4>5 Dimensions</h4><p>Strategy, People, Process, Technology &amp; Governance scored independently.</p></div>
+        <div class="feature"><div class="fi">🧭</div><h4>Maturity Level</h4><p>See exactly which stage of the AI adoption curve you're on.</p></div>
+        <div class="feature"><div class="fi">🗺️</div><h4>Personalized Roadmap</h4><p>Specific, prioritized next steps for every weak area.</p></div>
+      </div>
+      <p class="byline">Developed by <a href="https://rishichellani.netlify.app" target="_blank" rel="noopener">Rishi Chellani</a> · AI Enablement Lead</p>
+    </div>
+  </section>
+
+  <!-- SCREEN 2-6: SECTIONS (generated) -->
+  <section class="screen" id="screen-section">
+    <div class="sec-head">
+      <div class="sec-icon" id="sec-icon">🎯</div>
+      <div>
+        <h2 id="sec-title">Strategy &amp; Leadership</h2>
+        <div class="sec-sub" id="sec-sub">Vision, sponsorship and investment</div>
+      </div>
+    </div>
+    <div class="progress-meta">
+      <span id="sec-counter">Section 1 of 5</span>
+      <span id="sec-percent">0% complete</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+
+    <div id="questions"></div>
+
+    <div class="nav-row">
+      <button class="btn btn-ghost" id="back-btn" onclick="App.back()">← Back</button>
+      <button class="btn" id="next-btn" onclick="App.next()" disabled>Next →</button>
+    </div>
+  </section>
+
+  <!-- SCREEN 7: RESULTS -->
+  <section class="screen" id="screen-results">
+    <div class="results-head">
+      <h1 style="font-size:clamp(1.6rem,4vw,2.4rem)">Your AI Readiness Results</h1>
+      <div class="score-ring-wrap">
+        <div class="ring">
+          <svg width="200" height="200" viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="86" fill="none" stroke="#22263c" stroke-width="14"/>
+            <circle id="ring-prog" cx="100" cy="100" r="86" fill="none" stroke="var(--accent)" stroke-width="14"
+                    stroke-linecap="round" stroke-dasharray="540.35" stroke-dashoffset="540.35"/>
+          </svg>
+          <div class="score-num"><b id="overall-num">0</b><small>out of 100</small></div>
+        </div>
+        <div class="maturity" id="maturity-badge"><span id="maturity-emoji">🟡</span><span id="maturity-name">Developing</span></div>
+        <span class="desc" id="maturity-desc">Building foundations, some tools in use</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Readiness Across All Dimensions</h3>
+      <div class="chart-box"><canvas id="radar"></canvas></div>
+    </div>
+
+    <div class="panel">
+      <h3>Dimension Breakdown</h3>
+      <div class="cards-grid" id="dim-cards"></div>
+    </div>
+
+    <div class="panel">
+      <h3 style="color:var(--accent)">🗺️ Your AI Enablement Roadmap</h3>
+      <div id="recommendations"></div>
+    </div>
+
+    <div class="panel cta-final">
+      <h3>Want help building your AI enablement program?</h3>
+      <p>Turn these results into action. Get hands-on support designing your strategy, training your people, and rolling out the right tools.</p>
+      <div class="cta-row" style="margin-top:0">
+        <a class="btn" href="mailto:rishi.chellani@gmail.com?subject=AI%20Enablement%20Program%20Inquiry">Connect with Rishi</a>
+        <button class="btn btn-ghost" onclick="App.share()">Share your results</button>
+        <button class="btn btn-ghost" onclick="App.retake()">Retake Assessment</button>
+      </div>
+      <textarea class="share-out" id="share-out" readonly></textarea>
+    </div>
+
+    <p class="footer">Developed by <a href="https://rishichellani.netlify.app" target="_blank" rel="noopener">Rishi Chellani</a> · AI Enablement Lead</p>
+  </section>
+
+</div>
+
+<div class="toast" id="toast">Copied to clipboard ✓</div>
+
+<script>
+const DIMENSIONS = [
+  {
+    key:"strategy", name:"Strategy & Leadership", icon:"🎯",
+    sub:"Vision, sponsorship and investment",
+    questions:[
+      "Does your organization have a defined AI strategy or roadmap?",
+      "How committed is senior leadership to AI adoption?",
+      "Is there dedicated budget allocated for AI tools and training?",
+      "Are there measurable AI goals or KPIs currently in place?"
+    ],
+    rec:"Define a 90-day AI roadmap. Identify 3 priority use cases and secure executive sponsorship before scaling."
+  },
+  {
+    key:"people", name:"People & Culture", icon:"👥",
+    sub:"Skills, adoption and enablement",
+    questions:[
+      "How open is your workforce to adopting new AI tools?",
+      "Do you have internal AI champions or power users identified?",
+      "Is there a formal AI training or enablement program?",
+      "How would you rate your team's current AI literacy overall?"
+    ],
+    rec:"Launch an AI champions program. Identify 1-2 power users per department and build peer-led adoption from there."
+  },
+  {
+    key:"process", name:"Process & Workflows", icon:"⚙️",
+    sub:"Operations ready for automation",
+    questions:[
+      "Are your core business processes documented and mapped?",
+      "Have you identified specific workflows where AI could add value?",
+      "How mature is your organization's change management capability?",
+      "Do teams regularly review and improve existing processes?"
+    ],
+    rec:"Map your top 5 most repetitive workflows. These are your fastest AI wins — document them before automating."
+  },
+  {
+    key:"technology", name:"Technology & Data", icon:"💻",
+    sub:"Infrastructure, data and tooling",
+    questions:[
+      "How would you rate the quality and accessibility of your data?",
+      "Do you have existing AI or automation tools currently deployed?",
+      "How well do your current tools and systems integrate with each other?",
+      "Is there IT support in place for AI tool deployment and security?"
+    ],
+    rec:"Audit your current tool stack for AI-readiness. Start with tools your team already uses that have AI features built in — no new procurement needed."
+  },
+  {
+    key:"governance", name:"Governance & Risk", icon:"🛡️",
+    sub:"Policy, privacy and risk control",
+    questions:[
+      "Do you have policies governing AI use across your organization?",
+      "Are there clear data privacy and security protocols for AI?",
+      "Is there a formal process for evaluating and approving new AI tools?",
+      "How proactively does your organization manage AI-related risks?"
+    ],
+    rec:"Create a simple AI acceptable use policy. One page, plain language. Establish a lightweight review process for new AI tools before company-wide deployment."
+  }
+];
+
+const SCALE = [
+  {v:1,l:"Not at all"},
+  {v:2,l:"Minimal"},
+  {v:3,l:"Somewhat"},
+  {v:4,l:"Mostly"},
+  {v:5,l:"Fully"}
+];
+
+const MATURITY = [
+  {min:0,  max:20,  emoji:"🔴", name:"Beginning",  desc:"AI adoption hasn't started yet",          color:"#ef4444"},
+  {min:21, max:40,  emoji:"🟠", name:"Exploring",  desc:"Early awareness, limited deployment",     color:"#f97316"},
+  {min:41, max:60,  emoji:"🟡", name:"Developing", desc:"Building foundations, some tools in use", color:"#eab308"},
+  {min:61, max:80,  emoji:"🟢", name:"Advancing",  desc:"Systematic approach, measurable outcomes",color:"#22c55e"},
+  {min:81, max:100, emoji:"⭐", name:"Leading",    desc:"AI-native organization, competitive edge",color:"#00BFA6"}
+];
+
+const App = {
+  current:0,                       // current section index 0..4
+  answers:DIMENSIONS.map(()=>[null,null,null,null]),
+  radarChart:null,
+
+  start(){
+    this.current = 0;
+    this.renderSection();
+    this.show("screen-section");
+    window.scrollTo({top:0,behavior:"smooth"});
+  },
+
+  show(id){
+    document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+    const el = document.getElementById(id);
+    // re-trigger fade animation
+    el.classList.add("active");
+    el.style.animation="none";
+    void el.offsetWidth;
+    el.style.animation="";
+  },
+
+  renderSection(){
+    const d = DIMENSIONS[this.current];
+    document.getElementById("sec-icon").textContent = d.icon;
+    document.getElementById("sec-title").innerHTML = d.name;
+    document.getElementById("sec-sub").textContent = d.sub;
+    document.getElementById("sec-counter").textContent = `Section ${this.current+1} of ${DIMENSIONS.length}`;
+
+    const pct = Math.round((this.current/DIMENSIONS.length)*100);
+    document.getElementById("sec-percent").textContent = `${pct}% complete`;
+    document.getElementById("progress-fill").style.width = pct+"%";
+
+    const back = document.getElementById("back-btn");
+    back.style.visibility = this.current===0 ? "hidden":"visible";
+
+    const nextBtn = document.getElementById("next-btn");
+    nextBtn.textContent = this.current===DIMENSIONS.length-1 ? "See Results →" : "Next →";
+
+    const container = document.getElementById("questions");
+    container.innerHTML = "";
+    d.questions.forEach((q,qi)=>{
+      const card = document.createElement("div");
+      card.className = "q";
+      const saved = this.answers[this.current][qi];
+      if(saved) card.classList.add("answered");
+
+      const opts = SCALE.map(s=>`
+        <label class="opt">
+          <input type="radio" name="q-${this.current}-${qi}" value="${s.v}" ${saved===s.v?"checked":""}>
+          <span class="box"><span class="num">${s.v}</span><span class="lbl">${s.l}</span></span>
+        </label>`).join("");
+
+      card.innerHTML = `
+        <div class="q-text"><span class="q-num">${qi+1}.</span><span>${q}</span></div>
+        <div class="scale with-legend">${opts}</div>
+        <div class="legend"><span>Not at all</span><span>Fully</span></div>`;
+      container.appendChild(card);
+
+      card.querySelectorAll("input").forEach(inp=>{
+        inp.addEventListener("change",()=>{
+          this.answers[this.current][qi] = parseInt(inp.value,10);
+          card.classList.add("answered");
+          this.updateNext();
+        });
+      });
+    });
+
+    this.updateNext();
+    window.scrollTo({top:0,behavior:"smooth"});
+  },
+
+  updateNext(){
+    const complete = this.answers[this.current].every(a=>a!==null);
+    document.getElementById("next-btn").disabled = !complete;
+  },
+
+  next(){
+    if(!this.answers[this.current].every(a=>a!==null)) return;
+    if(this.current < DIMENSIONS.length-1){
+      this.current++;
+      this.show("screen-section");
+      this.renderSection();
+    } else {
+      this.showResults();
+    }
+  },
+
+  back(){
+    if(this.current>0){
+      this.current--;
+      this.show("screen-section");
+      this.renderSection();
+    }
+  },
+
+  dimScore(i){
+    const avg = this.answers[i].reduce((a,b)=>a+b,0)/4;
+    return Math.round(avg*20);
+  },
+
+  scoreColor(s){
+    if(s>=70) return "#22c55e";
+    if(s>=40) return "#eab308";
+    return "#ef4444";
+  },
+
+  maturityFor(score){
+    return MATURITY.find(m=>score>=m.min && score<=m.max) || MATURITY[0];
+  },
+
+  showResults(){
+    const scores = DIMENSIONS.map((_,i)=>this.dimScore(i));
+    const overall = Math.round(scores.reduce((a,b)=>a+b,0)/scores.length);
+
+    // progress bar full
+    document.getElementById("progress-fill").style.width = "100%";
+
+    this.show("screen-results");
+    window.scrollTo({top:0,behavior:"smooth"});
+
+    // animated count-up + ring
+    this.animateScore(overall);
+
+    // maturity badge
+    const m = this.maturityFor(overall);
+    document.getElementById("maturity-emoji").textContent = m.emoji;
+    document.getElementById("maturity-name").textContent = m.name;
+    document.getElementById("maturity-desc").textContent = m.desc;
+    const badge = document.getElementById("maturity-badge");
+    badge.style.borderColor = m.color;
+    badge.style.color = m.color;
+    badge.style.background = this.hexToRgba(m.color,.12);
+
+    // dimension cards
+    const cardsWrap = document.getElementById("dim-cards");
+    cardsWrap.innerHTML = "";
+    DIMENSIONS.forEach((d,i)=>{
+      const s = scores[i];
+      const color = this.scoreColor(s);
+      const status = s>=60 ? "Strength" : (s>=40 ? "Developing" : "Needs work");
+      const card = document.createElement("div");
+      card.className = "dim-card";
+      card.innerHTML = `
+        <div class="top">
+          <span class="name">${d.icon} ${d.name}</span>
+          <span class="pct" style="color:${color}">${s}</span>
+        </div>
+        <div class="bar"><i style="background:${color}"></i></div>
+        <span class="status" style="color:${color}">${status}</span>`;
+      cardsWrap.appendChild(card);
+      // animate bar
+      setTimeout(()=>{ card.querySelector(".bar i").style.width = s+"%"; },120+i*90);
+    });
+
+    // recommendations (score < 60)
+    const recWrap = document.getElementById("recommendations");
+    recWrap.innerHTML = "";
+    const weak = DIMENSIONS.map((d,i)=>({d,s:scores[i]})).filter(x=>x.s<60).sort((a,b)=>a.s-b.s);
+    if(weak.length===0){
+      recWrap.innerHTML = `<div class="all-strong"><div class="big">🏆</div>
+        <p>Every dimension scored 60 or above — your organization has a strong, balanced AI foundation. Focus now on scaling what works and pushing toward industry-leading practice.</p></div>`;
+    } else {
+      weak.forEach(({d,s})=>{
+        const el = document.createElement("div");
+        el.className = "rec";
+        el.innerHTML = `<h4>${d.icon} ${d.name} <span style="color:${this.scoreColor(s)};font-size:14px;font-weight:700">· ${s}/100</span></h4><p>${d.rec}</p>`;
+        recWrap.appendChild(el);
+      });
+    }
+
+    this.renderRadar(scores);
+  },
+
+  animateScore(target){
+    const el = document.getElementById("overall-num");
+    const ring = document.getElementById("ring-prog");
+    const circ = 2*Math.PI*86; // 540.35
+    ring.style.strokeDasharray = circ;
+    const ringColor = this.maturityFor(target).color;
+    ring.style.stroke = ringColor;
+
+    const dur = 1400, start = performance.now();
+    const ease = t => 1-Math.pow(1-t,3);
+    const step = now=>{
+      const t = Math.min(1,(now-start)/dur);
+      const e = ease(t);
+      el.textContent = Math.round(target*e);
+      el.style.color = ringColor;
+      ring.style.strokeDashoffset = circ*(1-(target/100)*e);
+      if(t<1) requestAnimationFrame(step);
+      else el.textContent = target;
+    };
+    requestAnimationFrame(step);
+  },
+
+  renderRadar(scores){
+    const ctx = document.getElementById("radar").getContext("2d");
+    if(this.radarChart) this.radarChart.destroy();
+    const labels = DIMENSIONS.map(d=>d.icon+" "+d.name.split(" ")[0]);
+    this.radarChart = new Chart(ctx,{
+      type:"radar",
+      data:{
+        labels,
+        datasets:[{
+          label:"Readiness",
+          data:scores,
+          fill:true,
+          backgroundColor:"rgba(0,191,166,.18)",
+          borderColor:"#00BFA6",
+          borderWidth:2,
+          pointBackgroundColor:"#00BFA6",
+          pointBorderColor:"#0f1117",
+          pointBorderWidth:2,
+          pointRadius:5,
+          pointHoverRadius:7
+        }]
+      },
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        plugins:{
+          legend:{display:false},
+          tooltip:{
+            backgroundColor:"#1a1d2e",borderColor:"#00BFA6",borderWidth:1,
+            titleColor:"#e8eaf0",bodyColor:"#00BFA6",padding:10,
+            callbacks:{label:c=>` ${c.raw}/100`}
+          }
+        },
+        scales:{
+          r:{
+            min:0,max:100,
+            ticks:{stepSize:20,color:"#5b6178",backdropColor:"transparent",font:{size:10}},
+            grid:{color:"rgba(138,144,166,.18)"},
+            angleLines:{color:"rgba(138,144,166,.18)"},
+            pointLabels:{color:"#c2c7da",font:{size:12,weight:"600"}}
+          }
+        },
+        animation:{duration:900}
+      }
+    });
+  },
+
+  share(){
+    const scores = DIMENSIONS.map((_,i)=>this.dimScore(i));
+    const overall = Math.round(scores.reduce((a,b)=>a+b,0)/scores.length);
+    const m = this.maturityFor(overall);
+    let txt = `🤖 AI Readiness Assessment — Results\n`;
+    txt += `─────────────────────────────\n`;
+    txt += `Overall Score: ${overall}/100\n`;
+    txt += `Maturity Level: ${m.emoji} ${m.name} — ${m.desc}\n\n`;
+    txt += `Dimension breakdown:\n`;
+    DIMENSIONS.forEach((d,i)=>{ txt += `${d.icon} ${d.name}: ${scores[i]}/100\n`; });
+    const weak = DIMENSIONS.filter((_,i)=>scores[i]<60);
+    if(weak.length){
+      txt += `\nPriority focus areas: ${weak.map(d=>d.name).join(", ")}\n`;
+    }
+    txt += `\nAssess your organization: rishichellani.netlify.app/ai-readiness.html\n`;
+    txt += `Developed by Rishi Chellani · AI Enablement Lead`;
+
+    const out = document.getElementById("share-out");
+    out.style.display = "block";
+    out.value = txt;
+
+    const done = ()=>this.toast("Results copied to clipboard ✓");
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(done).catch(()=>{ out.select(); this.toast("Select and copy the text above"); });
+    } else {
+      out.select(); document.execCommand && document.execCommand("copy"); done();
+    }
+    out.scrollIntoView({behavior:"smooth",block:"center"});
+  },
+
+  toast(msg){
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(this._tt);
+    this._tt = setTimeout(()=>t.classList.remove("show"),2400);
+  },
+
+  retake(){
+    this.current = 0;
+    this.answers = DIMENSIONS.map(()=>[null,null,null,null]);
+    document.getElementById("share-out").style.display="none";
+    if(this.radarChart){ this.radarChart.destroy(); this.radarChart=null; }
+    this.show("screen-intro");
+    window.scrollTo({top:0,behavior:"smooth"});
+  },
+
+  hexToRgba(hex,a){
+    const n = parseInt(hex.replace("#",""),16);
+    return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;
+  }
+};
+
+// keyboard: Enter advances when possible
+document.addEventListener("keydown",e=>{
+  if(e.key==="Enter" && document.getElementById("screen-section").classList.contains("active")){
+    const btn = document.getElementById("next-btn");
+    if(!btn.disabled) btn.click();
+  }
+});
+</script>
+</body>
+</html>
