@@ -798,27 +798,55 @@ const App = {
     }
     const regWord = c.regulated ? "regulated" : "non-regulated";
 
-    // --- 2. Focus dimension ---
-    let focusKey, focusReason;
+    // --- 2. Focus dimension: most important GAP, weighted by context ---
+    // Context-importance weights (precedence: regulated -> size -> default/even).
+    // The highest-weighted dimension is the context's "highest-stakes" area.
+    const weights = {strategy:1, people:1, process:1, technology:1, governance:1};
+    let primaryKey = null, ctxPhrase = "your context";
     if(c.regulated){
-      focusKey = "governance";
-      focusReason = "Your regulatory exposure makes governance the highest-stakes dimension — get this solid before scaling anything else.";
+      weights.governance = 1.6; weights.process = 1.3;
+      primaryKey = "governance"; ctxPhrase = "a regulated organization";
     } else if(sizeMeta.group==="small"){
-      focusKey = "people";
-      focusReason = "At your size, adoption lives or dies on people. Momentum from a few champions matters more than process or tooling right now.";
+      weights.people = 1.6; weights.strategy = 1.3;
+      primaryKey = "people"; ctxPhrase = "an organization your size";
     } else if(sizeMeta.group==="large"){
-      focusKey = "process";
-      focusReason = "At scale, your real constraint is coordination and repeatable process — not whether the technology works.";
-    } else {
-      let min = Infinity, mk = DIMENSIONS[0].key;
-      DIMENSIONS.forEach((d,i)=>{ if(scores[i] < min){ min = scores[i]; mk = d.key; } });
-      focusKey = mk;
-      focusReason = "This is your lowest-scoring dimension and the clearest place to gain ground quickly.";
+      weights.process = 1.6; weights.governance = 1.3;
+      primaryKey = "process"; ctxPhrase = "an organization at your scale";
     }
+    // Rank by importance × gap (100 - score); the top is BOTH important and low.
+    // This can never surface the user's strongest dimension as the thing to fix.
+    let best = -Infinity, focusKey = DIMENSIONS[0].key;
+    DIMENSIONS.forEach((d,i)=>{
+      const priority = weights[d.key] * (100 - scores[i]);
+      if(priority > best){ best = priority; focusKey = d.key; }
+    });
     const fIdx = DIMENSIONS.findIndex(d=>d.key===focusKey);
     const fd = DIMENSIONS[fIdx];
     const fScore = scores[fIdx];
     const fColor = this.scoreColor(fScore);
+
+    // Score-aware wording
+    const STRONG = 70;
+    let focusReason;
+    if(primaryKey){
+      const pIdx = DIMENSIONS.findIndex(d=>d.key===primaryKey);
+      const pName = DIMENSIONS[pIdx].name, pScore = scores[pIdx];
+      if(pScore >= STRONG){
+        if(focusKey === primaryKey){
+          // highest-stakes area is strong and still the top gap -> everything's solid
+          focusReason = `${pName} is your highest-stakes area for ${ctxPhrase} — and you're already strong here (${pScore}/100). You're in good shape across the board; keep protecting it.`;
+        } else {
+          // acknowledge the strength, redirect to the real gap
+          focusReason = `${pName} is your highest-stakes area for ${ctxPhrase} — and you're already strong there (${pScore}/100). Protect it, and focus next on ${fd.name}, your biggest context-weighted gap at ${fScore}/100.`;
+        }
+      } else if(focusKey === primaryKey){
+        focusReason = `${fd.name} is both the highest-stakes dimension for ${ctxPhrase} and one of your lower scores (${fScore}/100) — this is a priority gap, close it before scaling.`;
+      } else {
+        focusReason = `Weighing what matters most for ${ctxPhrase} against where you actually stand, ${fd.name} (${fScore}/100) is your most important gap — close it before scaling.`;
+      }
+    } else {
+      focusReason = `${fd.name} (${fScore}/100) is your lowest-scoring dimension and the clearest place to gain ground quickly.`;
+    }
 
     // --- 3. Suggested next step ---
     const step = this.nextStepText(sizeMeta, c.regulated);
