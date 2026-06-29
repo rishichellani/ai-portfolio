@@ -176,6 +176,87 @@
     .ring .score-num b{font-size:46px}
   }
   .legend{display:none;justify-content:space-between;color:var(--muted);font-size:11px;margin-top:8px;padding:0 2px}
+
+  /* Personalize form */
+  .personalize-intro{color:var(--muted);font-size:14px;margin:-4px 0 22px;max-width:640px}
+  .field{margin-bottom:22px}
+  .field-label{display:block;font-size:13px;font-weight:700;color:var(--text);margin-bottom:11px}
+  .chip-row{display:flex;flex-wrap:wrap;gap:9px}
+  .chip{
+    background:#161929;border:1px solid var(--border);border-radius:12px;
+    padding:10px 16px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;
+    transition:all .16s ease;font-family:inherit;text-align:left;line-height:1.3;
+  }
+  .chip:hover{border-color:var(--accent);color:var(--text)}
+  .chip.sel{background:var(--accent-dim);border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+  .chip small{display:block;font-size:11px;font-weight:500;opacity:.75;margin-top:2px}
+  .toggle-row{display:inline-flex;background:#161929;border:1px solid var(--border);border-radius:999px;padding:4px;gap:4px}
+  .toggle-opt{
+    background:transparent;border:none;color:var(--muted);font-weight:700;font-size:14px;
+    padding:9px 30px;border-radius:999px;cursor:pointer;transition:all .16s ease;font-family:inherit;
+  }
+  .toggle-opt:hover{color:var(--text)}
+  .toggle-opt.sel{background:var(--accent);color:#04201c}
+
+  /* Persistent, editable control bar */
+  .control-bar{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end}
+  .ctrl{display:flex;flex-direction:column;gap:8px;flex:1 1 200px;min-width:160px}
+  .ctrl-label{font-size:12px;font-weight:700;color:var(--text);letter-spacing:.01em}
+  .ctrl select{
+    appearance:none;-webkit-appearance:none;-moz-appearance:none;width:100%;
+    background-color:#161929;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a90a6' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat:no-repeat;background-position:right 13px center;
+    border:1px solid var(--border);border-radius:11px;color:var(--text);
+    font-family:inherit;font-size:14px;font-weight:600;padding:11px 36px 11px 14px;cursor:pointer;
+    transition:border-color .16s ease,box-shadow .16s ease;
+  }
+  .ctrl select:hover{border-color:var(--accent)}
+  .ctrl select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+  .ctrl select option{background:#161929;color:var(--text)}
+  .ctrl-toggle .toggle-row{align-self:flex-start}
+
+  .pp-collapsed{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .pp-collapsed-text{color:var(--muted);font-size:14px;font-weight:600}
+
+  /* Compact mode after first submit: controls stay, prompt shrinks to a subtle label */
+  #pp-title{transition:all .2s ease}
+  #personalize-panel.compact{background:#161929}
+  #personalize-panel.compact #pp-title{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;margin-bottom:14px}
+
+  @media (max-width:560px){
+    .ctrl{flex:1 1 100%}
+    .pp-collapsed{flex-direction:column;align-items:stretch}
+  }
+
+  /* Tailored insights */
+  .insight-h{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 14px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .bench-bar{position:relative;height:48px;margin:20px 4px 6px}
+  .bench-track{position:absolute;top:20px;left:0;right:0;height:10px;background:#22263c;border-radius:999px}
+  .bench-band{position:absolute;top:20px;height:10px;background:linear-gradient(90deg,rgba(0,191,166,.45),rgba(63,224,200,.7));border-radius:999px;box-shadow:0 0 16px rgba(0,191,166,.25)}
+  .bench-marker{position:absolute;top:10px;width:4px;height:30px;background:#fff;border-radius:3px;box-shadow:0 0 0 3px var(--card),0 0 12px rgba(255,255,255,.5);transform:translateX(-50%)}
+  .bench-you{position:absolute;top:-6px;transform:translateX(-50%);font-size:12px;font-weight:800;color:var(--accent);white-space:nowrap}
+  .bench-scale{display:flex;justify-content:space-between;color:#5b6178;font-size:11px;margin:2px 4px 0}
+  .bench-text{font-size:15px;color:#c2c7da;margin-top:12px}
+  .bench-text b{color:var(--text)}
+  .est-note{font-size:11px;color:#5b6178;margin-top:10px;font-style:italic}
+
+  .focus-card{display:flex;gap:16px;align-items:flex-start}
+  .focus-card .fi{font-size:32px;flex:none;width:62px;height:62px;border-radius:14px;background:var(--accent-dim);border:1px solid rgba(0,191,166,.25);display:flex;align-items:center;justify-content:center}
+  .focus-card .fname{font-size:18px;font-weight:800;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .focus-card .fscore{font-size:14px;font-weight:700}
+  .focus-card .freason{color:#c2c7da;font-size:14px;margin-top:6px}
+
+  .hero-step{background:linear-gradient(135deg,rgba(0,191,166,.18),rgba(0,191,166,.03));border:1px solid rgba(0,191,166,.4);box-shadow:0 12px 44px rgba(0,191,166,.12)}
+  .hero-step .insight-h{color:var(--accent)}
+  .hero-step .step-text{font-size:clamp(1.12rem,2.6vw,1.45rem);font-weight:700;line-height:1.45;letter-spacing:-.01em;color:var(--text)}
+  .hero-step .cta-row{margin-top:26px;justify-content:flex-start}
+  @media (max-width:560px){
+    .focus-card{flex-direction:column}
+    .toggle-opt{padding:9px 24px}
+    .hero-step .cta-row{justify-content:center}
+    .chip{flex:1 1 calc(50% - 9px)}
+  }
 </style>
 </head>
 <body>
@@ -230,7 +311,7 @@
   <!-- SCREEN 7: RESULTS -->
   <section class="screen" id="screen-results">
     <div class="results-head">
-      <h1 style="font-size:clamp(1.6rem,4vw,2.4rem)">Your AI Readiness Results</h1>
+      <h1 id="results-title" style="font-size:clamp(1.6rem,4vw,2.4rem)">Your AI Readiness Results</h1>
       <div class="score-ring-wrap">
         <div class="ring">
           <svg width="200" height="200" viewBox="0 0 200 200">
@@ -259,6 +340,47 @@
       <h3 style="color:var(--accent)">🗺️ Your AI Enablement Roadmap</h3>
       <div id="recommendations"></div>
     </div>
+
+    <!-- PERSONALIZE YOUR RESULTS -->
+    <div class="panel" id="personalize-panel">
+      <!-- Collapsed prompt (shown after "Skip for now") -->
+      <div class="pp-collapsed" id="pp-collapsed" style="display:none">
+        <span class="pp-collapsed-text">✨ Personalize your results — see how you compare and what to focus on first.</span>
+        <button class="btn btn-ghost" onclick="App.openPersonalize()">Personalize</button>
+      </div>
+
+      <!-- Open controls (intro form + persistent, editable control bar) -->
+      <div id="pp-open">
+        <h3 id="pp-title">✨ Personalize Your Results</h3>
+        <p class="personalize-intro" id="pp-intro">Tell us about your organization to see how you compare and what to focus on first. Optional — and it never changes your score.</p>
+
+        <div class="control-bar">
+          <div class="ctrl">
+            <label class="ctrl-label" for="size-select">Organization size</label>
+            <select id="size-select" onchange="App.onContextChange()"></select>
+          </div>
+          <div class="ctrl">
+            <label class="ctrl-label" for="industry-select">Industry</label>
+            <select id="industry-select" onchange="App.onContextChange()"></select>
+          </div>
+          <div class="ctrl ctrl-toggle">
+            <label class="ctrl-label">Heavily regulated?</label>
+            <div class="toggle-row" id="reg-toggle">
+              <button type="button" class="toggle-opt" data-reg="yes" onclick="App.setReg(true)">Yes</button>
+              <button type="button" class="toggle-opt" data-reg="no" onclick="App.setReg(false)">No</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="nav-row" id="pp-actions" style="margin-top:22px">
+          <button class="btn btn-ghost" onclick="App.skipPersonalize()">Skip for now</button>
+          <button class="btn" id="personalize-submit" onclick="App.submitPersonalize()" disabled>See my tailored insights →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAILORED INSIGHTS (rendered on submit, live-updates on any control change) -->
+    <div id="personalized-panel" style="display:none"></div>
 
     <div class="panel cta-final">
       <h3>Want help building your AI enablement program?</h3>
@@ -353,10 +475,38 @@ const MATURITY = [
   {min:81, max:100, emoji:"⭐", name:"Leading",    desc:"AI-native organization, competitive edge",color:"#00BFA6"}
 ];
 
+// ---- Personalization data (display-only; never affects the score) ----
+const SIZES = [
+  {key:"startup",    word:"Startup",    label:"1–50",        group:"small"},
+  {key:"small",      word:"Small",      label:"51–250",      group:"small"},
+  {key:"midsize",    word:"Mid-size",   label:"251–1,000",   group:"mid"},
+  {key:"large",      word:"Large",      label:"1,001–5,000", group:"large"},
+  {key:"enterprise", word:"Enterprise", label:"5,000+",      group:"large"}
+];
+
+const INDUSTRIES = [
+  "Technology / SaaS","Financial Services","Legal / Professional Services",
+  "Healthcare / Life Sciences","Manufacturing","Retail / Consumer",
+  "Media / Entertainment","Government / Public Sector","Education / Nonprofit","Other"
+];
+
+// Heuristic typical-range lookup by size × regulatory profile (estimates, not survey data)
+const BENCH = {
+  startup:    {no:[35,55], yes:[40,58]},
+  small:      {no:[40,58], yes:[50,65]},
+  midsize:    {no:[45,62], yes:[52,68]},
+  large:      {no:[52,70], yes:[58,74]},
+  enterprise: {no:[58,78], yes:[62,80]}
+};
+
 const App = {
   current:0,                       // current section index 0..4
   answers:DIMENSIONS.map(()=>[null,null,null,null]),
   radarChart:null,
+  context:{size:null,industry:null,regulated:null},
+  personalized:false,
+  lastScores:null,
+  lastOverall:0,
 
   start(){
     this.current = 0;
@@ -467,6 +617,8 @@ const App = {
   showResults(){
     const scores = DIMENSIONS.map((_,i)=>this.dimScore(i));
     const overall = Math.round(scores.reduce((a,b)=>a+b,0)/scores.length);
+    this.lastScores = scores;
+    this.lastOverall = overall;
 
     // progress bar full
     document.getElementById("progress-fill").style.width = "100%";
@@ -525,6 +677,186 @@ const App = {
     }
 
     this.renderRadar(scores);
+    this.resetPersonalize();
+  },
+
+  // ---- Personalization (display layer only — score is untouched) ----
+  resetPersonalize(){
+    this.context = {size:null,industry:null,regulated:null};
+    this.personalized = false;
+    document.getElementById("results-title").textContent = "Your AI Readiness Results";
+    const out = document.getElementById("personalized-panel");
+    out.style.display = "none";
+    out.innerHTML = "";
+    const panel = document.getElementById("personalize-panel");
+    panel.style.display = "block";
+    panel.classList.remove("compact");
+    document.getElementById("pp-collapsed").style.display = "none";
+    document.getElementById("pp-open").style.display = "block";
+    document.getElementById("pp-intro").style.display = "block";
+    document.getElementById("pp-actions").style.display = "flex";
+    document.getElementById("pp-title").textContent = "✨ Personalize Your Results";
+    this.buildPersonalizeUI();
+  },
+
+  buildPersonalizeUI(){
+    const ss = document.getElementById("size-select");
+    ss.innerHTML = '<option value="">Select size…</option>' +
+      SIZES.map(s=>`<option value="${s.key}">${s.word} · ${s.label}</option>`).join("");
+    ss.value = "";
+    const is = document.getElementById("industry-select");
+    is.innerHTML = '<option value="">Select industry…</option>' +
+      INDUSTRIES.map(name=>`<option value="${name}">${name}</option>`).join("");
+    is.value = "";
+    document.querySelectorAll("#reg-toggle .toggle-opt").forEach(t=>t.classList.remove("sel"));
+    document.getElementById("personalize-submit").disabled = true;
+  },
+
+  // Any size/industry dropdown change — live-updates if already personalized
+  onContextChange(){
+    this.context.size = document.getElementById("size-select").value || null;
+    this.context.industry = document.getElementById("industry-select").value || null;
+    if(this.personalized) this.renderTailored();
+    else this.updatePersonalizeSubmit();
+  },
+
+  setReg(val){
+    this.context.regulated = val;
+    document.querySelectorAll("#reg-toggle .toggle-opt").forEach(t=>t.classList.toggle("sel",(t.dataset.reg==="yes")===val));
+    if(this.personalized && this.context.size) this.renderTailored();
+    else this.updatePersonalizeSubmit();
+  },
+
+  updatePersonalizeSubmit(){
+    const c = this.context;
+    document.getElementById("personalize-submit").disabled = !(c.size && c.regulated!==null);
+  },
+
+  skipPersonalize(){
+    document.getElementById("pp-open").style.display = "none";
+    document.getElementById("pp-collapsed").style.display = "flex";
+    document.getElementById("personalize-panel").classList.remove("compact");
+  },
+
+  openPersonalize(){
+    document.getElementById("pp-collapsed").style.display = "none";
+    document.getElementById("pp-open").style.display = "block";
+    document.getElementById("personalize-panel").scrollIntoView({behavior:"smooth",block:"center"});
+  },
+
+  nextStepText(sizeMeta,regulated){
+    if(regulated){
+      if(sizeMeta.group==="small") return "Stand up a lightweight AI governance policy covering data handling and approved tools — quick to do at your size, and high-leverage given your regulatory exposure.";
+      if(sizeMeta.group==="mid")   return "Formalize a simple AI intake and risk check before any tool touches regulated data. You have enough scale that ad-hoc approvals will quietly become a liability.";
+      return "Establish a cross-functional AI governance council with legal, security, and the business at the table. At your scale and regulatory exposure, coordinated oversight is the unlock.";
+    }
+    if(sizeMeta.key==="startup") return "Skip heavy governance for now. Run a 30-day pilot on one high-volume workflow to build momentum.";
+    if(sizeMeta.key==="small")   return "Pick one team and one repetitive workflow. Run a focused 30-day AI pilot, measure the time saved, and use that win to pull broader adoption.";
+    if(sizeMeta.group==="mid")   return "Name 1–2 AI champions per department and give them a clear mandate. Peer-led adoption will move faster than any top-down rollout at your size.";
+    return "Establish a cross-functional AI council before scaling tools — coordination is your bottleneck, not capability.";
+  },
+
+  submitPersonalize(){
+    const c = this.context;
+    if(!c.size || c.regulated===null) return;
+    this.personalized = true;
+    document.getElementById("pp-intro").style.display = "none";
+    document.getElementById("pp-actions").style.display = "none";
+    document.getElementById("pp-title").textContent = "Adjust your organization profile";
+    document.getElementById("personalize-panel").classList.add("compact");
+    const out = document.getElementById("personalized-panel");
+    out.style.display = "block";
+    this.renderTailored();
+    out.scrollIntoView({behavior:"smooth",block:"start"});
+  },
+
+  // Recomputes the three context panels against the SAME score (no reassessment)
+  renderTailored(){
+    const c = this.context;
+    if(!c.size || c.regulated===null) return;
+    const sizeMeta = SIZES.find(s=>s.key===c.size);
+    const scores = this.lastScores;
+    const overall = this.lastOverall;
+
+    // --- Update results header to reflect context ---
+    const article = /^[AEIOU]/.test(sizeMeta.word) ? "an" : "a";
+    const ind = (c.industry && c.industry!=="Other") ? " "+c.industry : "";
+    document.getElementById("results-title").textContent =
+      `Readiness for ${article} ${sizeMeta.word}${ind} org${c.regulated?" · regulated":""}`;
+
+    // --- 1. Peer benchmark ---
+    const band = BENCH[c.size][c.regulated ? "yes" : "no"];
+    const lo = band[0], hi = band[1];
+    let pos;
+    if(overall < lo) pos = "below the typical range";
+    else if(overall > hi) pos = "above the typical range";
+    else {
+      const third = (hi-lo)/3;
+      if(overall < lo+third) pos = "in the lower range";
+      else if(overall > hi-third) pos = "in the upper range";
+      else pos = "around the median";
+    }
+    const regWord = c.regulated ? "regulated" : "non-regulated";
+
+    // --- 2. Focus dimension ---
+    let focusKey, focusReason;
+    if(c.regulated){
+      focusKey = "governance";
+      focusReason = "Your regulatory exposure makes governance the highest-stakes dimension — get this solid before scaling anything else.";
+    } else if(sizeMeta.group==="small"){
+      focusKey = "people";
+      focusReason = "At your size, adoption lives or dies on people. Momentum from a few champions matters more than process or tooling right now.";
+    } else if(sizeMeta.group==="large"){
+      focusKey = "process";
+      focusReason = "At scale, your real constraint is coordination and repeatable process — not whether the technology works.";
+    } else {
+      let min = Infinity, mk = DIMENSIONS[0].key;
+      DIMENSIONS.forEach((d,i)=>{ if(scores[i] < min){ min = scores[i]; mk = d.key; } });
+      focusKey = mk;
+      focusReason = "This is your lowest-scoring dimension and the clearest place to gain ground quickly.";
+    }
+    const fIdx = DIMENSIONS.findIndex(d=>d.key===focusKey);
+    const fd = DIMENSIONS[fIdx];
+    const fScore = scores[fIdx];
+    const fColor = this.scoreColor(fScore);
+
+    // --- 3. Suggested next step ---
+    const step = this.nextStepText(sizeMeta, c.regulated);
+
+    const html = `
+      <div class="panel">
+        <h4 class="insight-h">📊 Peer Benchmark</h4>
+        <div class="bench-bar">
+          <div class="bench-track"></div>
+          <div class="bench-band" style="left:${lo}%;width:${hi-lo}%"></div>
+          <div class="bench-marker" style="left:${overall}%"></div>
+          <div class="bench-you" style="left:${Math.min(96,Math.max(4,overall))}%">You · ${overall}</div>
+        </div>
+        <div class="bench-scale"><span>0</span><span>50</span><span>100</span></div>
+        <p class="bench-text"><b>${sizeMeta.word}, ${regWord}</b> peers typically score <b>${lo}–${hi}</b>. You're at <b>${overall}</b> — ${pos}.</p>
+        <p class="est-note">Ranges are heuristic estimates for organizations of a similar size and regulatory profile — directional, not a statistical survey.</p>
+      </div>
+
+      <div class="panel">
+        <h4 class="insight-h">🎯 Focus Here First</h4>
+        <div class="focus-card">
+          <div class="fi">${fd.icon}</div>
+          <div>
+            <div class="fname">${fd.name} <span class="fscore" style="color:${fColor}">${fScore}/100</span></div>
+            <div class="freason">${focusReason}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel hero-step">
+        <h4 class="insight-h">🚀 Suggested Next Step</h4>
+        <p class="step-text">${step}</p>
+        <div class="cta-row">
+          <a class="btn" href="mailto:rishi.chellani@gmail.com?subject=AI%20Enablement%20Program%20Inquiry">Connect with Rishi</a>
+        </div>
+      </div>`;
+
+    document.getElementById("personalized-panel").innerHTML = html;
   },
 
   animateScore(target){
@@ -637,6 +969,7 @@ const App = {
   retake(){
     this.current = 0;
     this.answers = DIMENSIONS.map(()=>[null,null,null,null]);
+    this.context = {size:null,industry:null,regulated:null};
     document.getElementById("share-out").style.display="none";
     if(this.radarChart){ this.radarChart.destroy(); this.radarChart=null; }
     this.show("screen-intro");
