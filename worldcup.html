@@ -543,6 +543,85 @@
   .match-card.draw { border-left-color: var(--gold); }
   .match-card.draw .mc-score { color: var(--gold); }
 
+  /* ── FIXTURES / UPCOMING ── */
+  .fixtures-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 0.85rem;
+  }
+
+  .fixture-card {
+    background: var(--pitch-card-2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .fixture-card:hover { transform: translateY(-2px); }
+
+  .fixture-card.is-next {
+    border-color: rgba(255,210,63,0.5);
+    box-shadow: 0 0 0 1px rgba(255,210,63,0.22), 0 0 22px rgba(255,210,63,0.08);
+  }
+
+  .fixture-card.is-live { border-color: rgba(255,45,120,0.55); }
+
+  .fx-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    margin-bottom: 0.55rem;
+  }
+
+  .fx-time { color: var(--blue); font-weight: 700; }
+
+  .next-badge {
+    color: #1a1300;
+    background: var(--gold);
+    font-weight: 800;
+    border-radius: 100px;
+    padding: 0.1rem 0.55rem;
+    letter-spacing: 0.06em;
+  }
+
+  .live-badge {
+    color: var(--magenta);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    animation: livepulse 1.4s ease-in-out infinite;
+  }
+
+  @keyframes livepulse { 50% { opacity: 0.35; } }
+
+  .fx-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.18rem 0;
+  }
+
+  .fx-name {
+    flex: 1;
+    font-size: 0.86rem;
+    color: #d5ece1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .fx-score {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--white);
+    min-width: 1.2rem;
+    text-align: right;
+  }
+
   /* ── BRACKET ── */
   .bracket-scroll { overflow-x: auto; padding-bottom: 0.75rem; }
 
@@ -711,6 +790,17 @@
 <!-- CONTENT -->
 <main id="content" class="hidden">
 
+  <!-- UPCOMING / SCHEDULE -->
+  <section class="panel acc-blue">
+    <div class="panel-head">
+      <span class="ico">📆</span>
+      <h2>Upcoming Matches</h2>
+      <span class="sub" id="fixtures-sub"></span>
+    </div>
+    <div id="fixtures"></div>
+    <div id="fixtures-empty" class="empty hidden">No upcoming matches scheduled right now.</div>
+  </section>
+
   <!-- TOP SCORERS -->
   <section class="panel acc-magenta">
     <div class="panel-head">
@@ -860,8 +950,92 @@
     renderScorers(data.scorers);
     renderStandings(data.standings);
     const matches = (data.matches && Array.isArray(data.matches.matches)) ? data.matches.matches : [];
+    renderFixtures(matches);
     renderMatches(matches);
     renderBracket(matches);
+  }
+
+  // ── UPCOMING / SCHEDULE (today's fixtures, next match, live) ──
+  function renderFixtures(matches) {
+    const LIVE = ["IN_PLAY", "PAUSED"];
+    const UPCOMING = ["SCHEDULED", "TIMED"];
+    const now = new Date();
+    const todayStr = now.toLocaleDateString();
+
+    const relevant = matches
+      .filter((m) => LIVE.includes(m.status) || UPCOMING.includes(m.status))
+      .sort((a, b) => new Date(a.utcDate) - new Date(b.utcDate));
+
+    if (!relevant.length) {
+      $("fixtures-empty").classList.remove("hidden");
+      return;
+    }
+
+    // the soonest not-yet-started match gets the NEXT marker
+    const nextUpcoming = relevant.find((m) => UPCOMING.includes(m.status));
+    const nextId = nextUpcoming ? nextUpcoming.id : null;
+
+    // show all live matches + the next batch of upcoming fixtures
+    const live = relevant.filter((m) => LIVE.includes(m.status));
+    const upcoming = relevant.filter((m) => UPCOMING.includes(m.status)).slice(0, 12);
+    const show = [...live, ...upcoming];
+
+    const todayCount = show.filter((m) => new Date(m.utcDate).toLocaleDateString() === todayStr).length;
+    $("fixtures-sub").textContent = live.length
+      ? `${live.length} live now`
+      : (todayCount
+          ? `${todayCount} today`
+          : (nextUpcoming
+              ? `Next: ${new Date(nextUpcoming.utcDate).toLocaleDateString(undefined, { month: "short", day: "numeric" })}`
+              : ""));
+
+    // group by date
+    const byDate = new Map();
+    show.forEach((m) => {
+      const d = new Date(m.utcDate);
+      const key = d.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+      if (!byDate.has(key)) byDate.set(key, []);
+      byDate.get(key).push(m);
+    });
+
+    let html = "";
+    for (const [date, list] of byDate) {
+      const isToday = new Date(list[0].utcDate).toLocaleDateString() === todayStr;
+      const cards = list.map((m) => fixtureCard(m, m.id === nextId)).join("");
+      html += `<div class="date-group">
+                 <div class="date-label">${isToday ? "Today · " : ""}${date}</div>
+                 <div class="fixtures-grid">${cards}</div>
+               </div>`;
+    }
+    $("fixtures").innerHTML = html;
+  }
+
+  function fixtureCard(m, isNext) {
+    const home = m.homeTeam, away = m.awayTeam;
+    const live = m.status === "IN_PLAY" || m.status === "PAUSED";
+    const stage = STAGE_LABELS[m.stage] || groupLabel(m.group) || groupLabel(m.stage);
+    const time = new Date(m.utcDate).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    const ft = (m.score && m.score.fullTime) ? m.score.fullTime : null;
+    const showScore = live && ft && ft.home != null && ft.away != null;
+
+    const badge = live
+      ? '<span class="live-badge">● LIVE</span>'
+      : (isNext ? '<span class="next-badge">NEXT</span>' : `<span class="fx-time">${time}</span>`);
+
+    return `
+      <div class="fixture-card ${isNext ? "is-next" : ""} ${live ? "is-live" : ""}">
+        <div class="fx-top"><span>${stage}</span>${badge}</div>
+        <div class="fx-row">
+          ${crestImg(home)}
+          <span class="fx-name">${teamName(home)}</span>
+          ${showScore ? `<span class="fx-score">${ft.home}</span>` : ""}
+        </div>
+        <div class="fx-row">
+          ${crestImg(away)}
+          <span class="fx-name">${teamName(away)}</span>
+          ${showScore ? `<span class="fx-score">${ft.away}</span>` : ""}
+        </div>
+      </div>`;
   }
 
   // ── TOP SCORERS (crest + nation-tinted CSS bars) ──
