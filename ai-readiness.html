@@ -689,10 +689,10 @@ const App = {
     ).join(' | ');
     set('rf-answers', detail);
     // recommendations: list weak dimensions and their rec text
-    const weak = DIMENSIONS.map((d,i)=>({d,s:scores[i]})).filter(x=>x.s<60).sort((a,b)=>a.s-b.s);
-    const recText = weak.length === 0
+    const weakDims = DIMENSIONS.map((d,i)=>({d,s:scores[i]})).filter(x=>x.s<60).sort((a,b)=>a.s-b.s);
+    const recText = weakDims.length === 0
       ? 'All dimensions scored 60+: strong balanced foundation'
-      : weak.map(({d,s}) => d.name + ' (' + s + '/100): ' + d.rec).join(' || ');
+      : weakDims.map(({d,s}) => d.name + ' (' + s + '/100): ' + d.rec).join(' || ');
     set('rf-recommendations', recText);
 
     // maturity badge
