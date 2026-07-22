@@ -408,8 +408,22 @@
       <form id="results-form" name="ai-readiness-results" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value="ai-readiness-results">
         <p style="display:none"><label>Don't fill this out: <input name="bot-field"></label></p>
-        <input type="hidden" name="score" id="results-score-field">
+        <input type="hidden" name="overall-score" id="results-score-field">
         <input type="hidden" name="maturity-level" id="results-level-field">
+        <input type="hidden" name="score-strategy" id="rf-strategy">
+        <input type="hidden" name="score-people" id="rf-people">
+        <input type="hidden" name="score-process" id="rf-process">
+        <input type="hidden" name="score-technology" id="rf-technology">
+        <input type="hidden" name="score-governance" id="rf-governance">
+        <input type="hidden" name="recommendations" id="rf-recommendations">
+        <input type="hidden" name="company-size" id="rf-size">
+        <input type="hidden" name="industry" id="rf-industry">
+        <input type="hidden" name="regulated" id="rf-regulated">
+        <input type="hidden" name="peer-benchmark-position" id="rf-benchmark">
+        <input type="hidden" name="focus-dimension" id="rf-focus">
+        <input type="hidden" name="focus-reason" id="rf-focus-reason">
+        <input type="hidden" name="suggested-next-step" id="rf-next-step">
+        <input type="hidden" name="answers-detail" id="rf-answers">
         <h3 style="font-size:1rem;font-weight:600;margin-bottom:0.25rem">Save or share your results</h3>
         <p style="font-size:0.875rem;opacity:0.7;margin-bottom:1rem">Enter your details and I'll send you a summary with personalized next steps.</p>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem">
@@ -663,13 +677,24 @@ const App = {
     this.animateScore(overall);
 
     // populate hidden fields for results capture form
-    const scoreField = document.getElementById('results-score-field');
-    const levelField = document.getElementById('results-level-field');
-    if(scoreField) scoreField.value = overall;
+    const m = this.maturityFor(overall);
+    const set = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
+    set('results-score-field', overall);
+    set('results-level-field', m.name);
+    DIMENSIONS.forEach((d, i) => set('rf-' + d.key, scores[i]));
+    // per-question answers: "Strategy Q1:3, Q2:4 | People ..."
+    const detail = DIMENSIONS.map((d, i) =>
+      d.name + ': ' + this.answers[i].map((v, qi) => 'Q' + (qi+1) + ':' + v).join(', ')
+    ).join(' | ');
+    set('rf-answers', detail);
+    // recommendations: list weak dimensions and their rec text
+    const weak = DIMENSIONS.map((d,i)=>({d,s:scores[i]})).filter(x=>x.s<60).sort((a,b)=>a.s-b.s);
+    const recText = weak.length === 0
+      ? 'All dimensions scored 60+: strong balanced foundation'
+      : weak.map(({d,s}) => d.name + ' (' + s + '/100): ' + d.rec).join(' || ');
+    set('rf-recommendations', recText);
 
     // maturity badge
-    const m = this.maturityFor(overall);
-    if(levelField) levelField.value = m.name;
     document.getElementById("maturity-emoji").textContent = m.emoji;
     document.getElementById("maturity-name").textContent = m.name;
     document.getElementById("maturity-desc").textContent = m.desc;
@@ -924,6 +949,16 @@ const App = {
       </div>`;
 
     document.getElementById("personalized-panel").innerHTML = html;
+
+    // update hidden form fields with personalization context
+    const set = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
+    set('rf-size', sizeMeta ? sizeMeta.word + ' (' + sizeMeta.label + ')' : '');
+    set('rf-industry', c.industry || '');
+    set('rf-regulated', c.regulated ? 'Yes' : 'No');
+    set('rf-benchmark', 'Score ' + overall + ' vs peer range ' + lo + '–' + hi + ' (' + pos + ')');
+    set('rf-focus', fd.name + ' (' + fScore + '/100)');
+    set('rf-focus-reason', focusReason);
+    set('rf-next-step', step);
   },
 
   animateScore(target){
