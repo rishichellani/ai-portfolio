@@ -4,6 +4,52 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rishi Chellani — AI Enablement Lead</title>
+
+<!-- Umami Analytics — replace data-website-id with your actual ID from umami.is -->
+<script defer src="https://cloud.umami.is/script.js" data-website-id="PASTE-YOUR-UMAMI-WEBSITE-ID-HERE"></script>
+
+<!-- Schema.org structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "name": "Rishi Chellani",
+      "jobTitle": "AI Enablement Lead & Business Process Strategist",
+      "url": "https://rishichellani.netlify.app",
+      "email": "rishi.chellani@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Irvine",
+        "addressRegion": "CA",
+        "addressCountry": "US"
+      },
+      "alumniOf": [
+        { "@type": "CollegeOrUniversity", "name": "University of Windsor", "description": "BS Computer Science" },
+        { "@type": "CollegeOrUniversity", "name": "Marist University", "description": "MS Management Information Systems" }
+      ],
+      "sameAs": ["https://www.linkedin.com/in/rishichellani1"],
+      "knowsAbout": ["AI Enablement", "Business Process Analysis", "AI Training Programs", "Workflow Automation", "Claude", "ChatGPT", "Cowork", "Hebbia"]
+    },
+    {
+      "@type": "ProfessionalService",
+      "name": "Rishi Chellani — AI Enablement",
+      "description": "AI enablement consulting: training programs for non-technical teams, workflow automation, use case discovery, and AI content creation across finance, legal, IT, and operations.",
+      "url": "https://rishichellani.netlify.app",
+      "founder": { "@type": "Person", "name": "Rishi Chellani" },
+      "areaServed": "US",
+      "serviceType": [
+        "AI Training & Enablement",
+        "Workflow Automation",
+        "AI Use Case Discovery",
+        "AI Enablement Content Creation"
+      ]
+    }
+  ]
+}
+</script>
+
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -572,6 +618,110 @@
     font-weight: 500;
   }
 
+  /* ── CONTACT FORM ── */
+  .contact-form-wrap {
+    margin-top: 3rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 2rem 2.5rem;
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .contact-form-wrap h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 1.5rem;
+    text-align: left;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .form-group label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--slate-light);
+    letter-spacing: 0.03em;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    padding: 0.625rem 0.875rem;
+    color: var(--white);
+    font-size: 0.9375rem;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    outline: none;
+    width: 100%;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus {
+    border-color: var(--teal);
+  }
+
+  .form-group input::placeholder,
+  .form-group textarea::placeholder {
+    color: var(--slate);
+  }
+
+  .form-group textarea {
+    resize: vertical;
+    min-height: 110px;
+  }
+
+  .form-submit {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  .form-success {
+    display: none;
+    text-align: center;
+    padding: 2rem 1rem;
+  }
+
+  .form-success .success-icon {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+
+  .form-success h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 0.5rem;
+  }
+
+  .form-success p {
+    color: var(--slate-light);
+    font-size: 0.9375rem;
+  }
+
+  @media (max-width: 700px) {
+    .contact-form-wrap { padding: 1.5rem 1.25rem; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+
   /* ── FOOTER ── */
   footer {
     background: #080f1e;
@@ -852,6 +1002,37 @@
         </div>
       </a>
     </div>
+    <div class="contact-form-wrap fade-in">
+      <div id="form-success" class="form-success">
+        <span class="success-icon">✅</span>
+        <h4>Message received!</h4>
+        <p>Thanks for reaching out — I'll get back to you shortly.</p>
+      </div>
+      <form id="contact-form" name="contact" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value="contact">
+        <p style="display:none"><label>Don't fill this out: <input name="bot-field"></label></p>
+        <h3>Send me a message</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="contact-name">Name</label>
+            <input type="text" id="contact-name" name="name" placeholder="Jane Smith" required>
+          </div>
+          <div class="form-group">
+            <label for="contact-email">Email</label>
+            <input type="email" id="contact-email" name="email" placeholder="jane@company.com" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="contact-company">Company</label>
+          <input type="text" id="contact-company" name="company" placeholder="Acme Corp">
+        </div>
+        <div class="form-group">
+          <label for="contact-message">Message</label>
+          <textarea id="contact-message" name="message" placeholder="Tell me about your team's AI goals..." required></textarea>
+        </div>
+        <button type="submit" class="btn-primary form-submit">Send Message →</button>
+      </form>
+    </div>
   </div>
 </section>
 
@@ -861,6 +1042,17 @@
 </footer>
 
 <script>
+  const contactForm = document.getElementById('contact-form');
+  if (contactForm) {
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = new FormData(contactForm);
+      await fetch('/', { method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body: new URLSearchParams(data).toString() });
+      contactForm.style.display = 'none';
+      document.getElementById('form-success').style.display = 'block';
+    });
+  }
+
   const observer = new IntersectionObserver(
     (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
     { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
