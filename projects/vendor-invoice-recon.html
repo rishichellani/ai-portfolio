@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vendor Invoice Reconciliation — Rishi Chellani</title>
+<meta name="description" content="An AI agent that audits vendor invoices against purchase orders, contracts and AP policy, and returns Approved, Flagged or Rejected with explicit reasons.">
+<link rel="canonical" href="https://rishichellani.netlify.app/projects/vendor-invoice-recon.html">
+<meta name="theme-color" content="#faf9f6">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vendor Invoice Reconciliation — Rishi Chellani">
+<meta property="og:description" content="An AI agent that audits vendor invoices against purchase orders, contracts and AP policy, and returns Approved, Flagged or Rejected with explicit reasons.">
+<meta property="og:url" content="https://rishichellani.netlify.app/projects/vendor-invoice-recon.html">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="../assets/site.css">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="9c3e5e9e-6ef7-4074-9be3-7f592754f417"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="/">Rishi Chellani</a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu">
+      <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#i-menu"/></svg>
+    </button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="/#work" aria-current="page">Work</a></li>
+      <li><a href="/#videos">Videos</a></li>
+      <li><a href="/#services">Services</a></li>
+      <li><a href="/#about">About</a></li>
+      <li><a class="btn btn-primary" href="/#contact">Let's talk</a></li>
+    </ul>
+  </div>
+</header>
+<main id="main">
+  <div class="wrap">
+    <p class="crumb"><a href="/#work"><svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#i-arrow-left"/></svg> All work</a></p>
+    <div class="case-hero">
+      <p class="eyebrow">Accounts payable · Case study</p>
+      <h1>Vendor Invoice Reconciliation</h1>
+      <p class="lede">Upload one vendor invoice or a whole batch. The agent extracts each, finds the matching purchase order, contract and vendor-master record, applies an accounts-payable policy, and returns Approved, Flagged or Rejected with explicit discrepancy reasons.</p>
+      <dl class="facts">
+        <div><dt>Role</dt><dd>Designer and builder</dd></div>
+        <div><dt>Stack</dt><dd>Python, Streamlit, Gemini / Groq, Docker</dd></div>
+        <div><dt>Data</dt><dd>Synthetic, for demonstration</dd></div>
+        <div><dt>Status</dt><dd>Working prototype</dd></div>
+      </dl>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="https://github.com/rishichellani/vendor-invoice-agent" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#i-github"/></svg> View source on GitHub</a>
+      </div>
+    </div>
+
+    <div class="video" data-loom-id="" data-title="Vendor Invoice Reconciliation walkthrough">
+      <div class="video-empty">
+        <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#i-video"/></svg>
+        <strong>Walkthrough coming soon</strong>
+        <span>Loom recording in progress</span>
+      </div>
+    </div>
+
+    <div class="case-body">
+      <section>
+        <h2>The problem</h2>
+        <p>Accounts payable has to catch duplicates, over-billing, wrong tax and freight treatment, contractor expense overruns and vendor fraud, usually by hand and under time pressure. Each check needs the invoice, the PO, the contract and the policy side by side.</p>
+      </section>
+
+      <section>
+        <h2>How the agent works</h2>
+        <ul>
+          <li><strong>Goal:</strong> audit an invoice for full financial and policy compliance.</li>
+          <li><strong>Plan:</strong> extract fields, look up the PO, contract, vendor and policy, load invoice history, cross-check, run a policy review, then give a verdict. Every step is recorded in the report's trace.</li>
+          <li><strong>Memory:</strong> a reference store of structured PO, contract and vendor records. Past audits double as invoice history.</li>
+          <li><strong>Executor:</strong> deterministic policy rules. <strong>Only these rules can produce a Rejected verdict.</strong></li>
+          <li><strong>AI review:</strong> an LLM reads the invoice, PO, contract and policy for anything the rules cannot see. Its findings are advisory, capped at warning level. It can add findings but never reject or downgrade.</li>
+        </ul>
+        <p class="callout">The same principle as my P-card pipeline: rules decide, AI advises. It keeps outcomes explainable and defensible.</p>
+      </section>
+
+      <section>
+        <h2>What the rules check</h2>
+        <ul>
+          <li>Three-way match, with price, quantity and total tolerances</li>
+          <li>Cumulative billing and not-to-exceed limits on a PO</li>
+          <li>Freight and sales-tax rules, contractor T&amp;E limits, milestone billing</li>
+          <li>Duplicate and reprint detection</li>
+          <li>Vendor-master and bank-fraud red flags</li>
+          <li>Contract validity, payment terms and tiered approval authority</li>
+        </ul>
+        <p>Thresholds live in a configuration file, so a finance team can tune tolerances without touching code.</p>
+      </section>
+
+      <section>
+        <h2>Built for real inputs</h2>
+        <p>Invoices can be PDFs or images, including scanned, image-only documents. Calls request structured JSON from Gemini first and fall back to Groq on any failure, with text extraction for PDFs and a vision model for images. The app has a multi-file uploader, a batch summary table with CSV export, and a per-invoice audit dashboard.</p>
+        <p>Every audit is saved as JSON, and later audits read those to catch duplicate invoices and cumulative over-billing. Batches are processed in filename order so an original is on record before its reprint.</p>
+      </section>
+
+      <section>
+        <h2>Testing</h2>
+        <p>The repo ships 13 test invoices covering clean, duplicate, fraud, over-billing, T&amp;E and scanned cases, plus a unit test suite. All vendors, contracts and invoices are synthetic.</p>
+      </section>
+
+      <section>
+        <h2>More work</h2>
+        <div class="next">
+          <a class="card card-link" href="p-card-reconciler.html"><h3>P-Card &amp; Expense Reconciliation</h3><p>Card statement to ERP journal entry, with AI judging only what rules cannot.</p><span class="more">Read case study <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#i-arrow-right"/></svg></span></a>
+          <a class="card card-link" href="travel-concierge.html"><h3>AI Travel Concierge</h3><p>Trip constraints in, grounded day-by-day itinerary out.</p><span class="more">Read case study <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#i-arrow-right"/></svg></span></a>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+<footer>
+  <div class="wrap foot-inner">
+    <span>© 2026 Rishi Chellani · AI Enablement Lead · Irvine, CA</span>
+    <a href="/#contact">Get in touch</a>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

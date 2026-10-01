@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P-Card &amp; Expense Reconciliation — Rishi Chellani</title>
+<meta name="description" content="A deterministic plus LLM pipeline that takes a corporate card statement to a balanced ERP journal entry, with a hash-chained audit trail.">
+<link rel="canonical" href="https://rishichellani.netlify.app/projects/p-card-reconciler.html">
+<meta name="theme-color" content="#faf9f6">
+<meta property="og:type" content="article">
+<meta property="og:title" content="P-Card &amp; Expense Reconciliation — Rishi Chellani">
+<meta property="og:description" content="A deterministic plus LLM pipeline that takes a corporate card statement to a balanced ERP journal entry, with a hash-chained audit trail.">
+<meta property="og:url" content="https://rishichellani.netlify.app/projects/p-card-reconciler.html">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="../assets/site.css">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="9c3e5e9e-6ef7-4074-9be3-7f592754f417"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="/">Rishi Chellani</a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu">
+      <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#i-menu"/></svg>
+    </button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="/#work" aria-current="page">Work</a></li>
+      <li><a href="/#videos">Videos</a></li>
+      <li><a href="/#services">Services</a></li>
+      <li><a href="/#about">About</a></li>
+      <li><a class="btn btn-primary" href="/#contact">Let's talk</a></li>
+    </ul>
+  </div>
+</header>
+<main id="main">
+  <div class="wrap">
+    <p class="crumb"><a href="/#work"><svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#i-arrow-left"/></svg> All work</a></p>
+    <div class="case-hero">
+      <p class="eyebrow">Finance operations · Case study</p>
+      <h1>P-Card &amp; Expense Reconciliation</h1>
+      <p class="lede">A pipeline that takes a corporate purchasing-card statement to a balanced, ERP-ready journal entry. Deterministic code does everything computable. The LLM does one thing: judge whether an employee's explanation satisfies the written spending policy.</p>
+      <dl class="facts">
+        <div><dt>Role</dt><dd>Designer and builder</dd></div>
+        <div><dt>Stack</dt><dd>Python, Pydantic, Streamlit, Gemini / Groq / OpenRouter, Docker</dd></div>
+        <div><dt>Data</dt><dd>Synthetic, for demonstration</dd></div>
+        <div><dt>Status</dt><dd>Working prototype</dd></div>
+      </dl>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="https://github.com/rishichellani/p-card-reconciliation" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#i-github"/></svg> View source on GitHub</a>
+      </div>
+    </div>
+
+    <div class="video" data-loom-id="" data-title="P-Card &amp; Expense Reconciliation walkthrough">
+      <div class="video-empty">
+        <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#i-video"/></svg>
+        <strong>Walkthrough coming soon</strong>
+        <span>Loom recording in progress</span>
+      </div>
+    </div>
+
+    <div class="case-body">
+      <section>
+        <h2>The problem</h2>
+        <p>Finance teams reconcile hundreds of card transactions a month. Most checks are arithmetic and rules. One is not: <strong>does this employee's explanation actually satisfy our spending policy?</strong> “Team bonding” at a bar is not the same as “dinner with a procurement contact to discuss renewal terms”.</p>
+      </section>
+
+      <section>
+        <h2>The design principle: use the LLM only where rules cannot</h2>
+        <p>Splitting the work this way keeps the numbers auditable and confines AI judgement to the one step that needs it.</p>
+        <ul>
+          <li><strong>Deterministic Python:</strong> schema validation and quarantine of dirty rows, card-to-employee-to-cost-center routing, limits, receipt matching, duplicate and split-purchase detection, GL mapping, and balanced double entry using <code>Decimal</code>.</li>
+          <li><strong>LLM, qualitative only:</strong> is the justification specific and plausible, does it satisfy the meal, gift, travel and home-office policy text, and is it personal use dressed up as business use.</li>
+        </ul>
+        <p class="callout">The model can escalate a finding but never downgrade one. If the LLM approves something a rule flagged, the flag stands.</p>
+      </section>
+
+      <section>
+        <h2>How it flows</h2>
+        <p>Four stages, each writing its own JSON artifact instead of holding state in memory: validate and route, collect justifications, compliance audit (rules first, then the LLM), and the ERP journal.</p>
+        <div class="shots">
+          <figure><img src="../assets/img/pcard-p-card-architecture-claude.png" alt="Architecture diagram of the four-stage P-card reconciliation pipeline" width="1600" height="900" loading="lazy"><figcaption>Pipeline architecture</figcaption></figure>
+        </div>
+      </section>
+
+      <section>
+        <h2>Controls a finance team would ask for</h2>
+        <ul>
+          <li><strong>Immutable artifacts and a hash chain.</strong> Each stage's output is written once and made read-only. Every artifact stores the SHA-256 of its own payload and the previous stage's, and a verify command re-checks the chain so any edit is detected.</li>
+          <li><strong>Append-only justification log.</strong> Each submission records who and when. A later entry supersedes an earlier one but never erases it.</li>
+          <li><strong>Journal integrity.</strong> The exporter refuses to write unless debits equal credits and net card liability ties to the statement control total.</li>
+          <li><strong>Honest provenance.</strong> Every justification is labelled as employee-entered or sample data, with a warning banner whenever sample data is present.</li>
+          <li><strong>Prompt-injection posture.</strong> Employee text is treated as untrusted data. The model sees the justification, merchant, amount and department, not names, emails or card numbers.</li>
+        </ul>
+        <div class="shots">
+          <figure><img src="../assets/img/pcard-final-overview.png" alt="Results overview showing 44 approved, 3 flagged, 3 rejected transactions and passing control checks" width="1600" height="1520" loading="lazy"><figcaption>Results overview: outcomes by spend and control checks (sample data)</figcaption></figure>
+          <figure><img src="../assets/img/pcard-final-needs-review.png" alt="Filtered list of transactions that need review" width="1600" height="900" loading="lazy"><figcaption>Transactions that need review (sample data)</figcaption></figure>
+        </div>
+      </section>
+
+      <section>
+        <h2>Resilient LLM routing</h2>
+        <p>A small reusable client fails over across Gemini, Groq and OpenRouter, throttles per provider for free-tier limits, disables a provider after rejected credentials, and retries invalid output on a different provider. A partial outage sends only the affected transactions to manual review. A total outage stops the audit without saving anything, so it can be retried rather than baking an all-manual-review result into the record.</p>
+      </section>
+
+      <section>
+        <h2>Quality</h2>
+        <p>115 offline tests cover money parsing, quarantine behaviour, provider failover, the hash chain and tamper detection, and total versus partial outages. A dedicated QA pass found 26 defects, all fixed, with regression tests. One example: an amount like <code>1,23</code> was silently read as $123.00. A <code>--mock-llm</code> mode runs the whole pipeline with no API keys.</p>
+        <p class="callout">The sample statements and employees are invented, and most justifications are generated by the pipeline. The verdicts are real model output on that fake input, and any approval percentage reflects the invented data, not a measured accuracy.</p>
+      </section>
+
+      <section>
+        <h2>More work</h2>
+        <div class="next">
+          <a class="card card-link" href="vendor-invoice-recon.html"><h3>Vendor Invoice Reconciliation</h3><p>Audits invoices against POs, contracts and AP policy.</p><span class="more">Read case study <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#i-arrow-right"/></svg></span></a>
+          <a class="card card-link" href="travel-concierge.html"><h3>AI Travel Concierge</h3><p>Trip constraints in, grounded day-by-day itinerary out.</p><span class="more">Read case study <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#i-arrow-right"/></svg></span></a>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+<footer>
+  <div class="wrap foot-inner">
+    <span>© 2026 Rishi Chellani · AI Enablement Lead · Irvine, CA</span>
+    <a href="/#contact">Get in touch</a>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

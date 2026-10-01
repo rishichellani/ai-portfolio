@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Travel Concierge — Rishi Chellani</title>
+<meta name="description" content="A Streamlit app that turns trip constraints into a day-by-day itinerary, grounded in curated local knowledge with a fallback model.">
+<link rel="canonical" href="https://rishichellani.netlify.app/projects/travel-concierge.html">
+<meta name="theme-color" content="#faf9f6">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AI Travel Concierge — Rishi Chellani">
+<meta property="og:description" content="A Streamlit app that turns trip constraints into a day-by-day itinerary, grounded in curated local knowledge with a fallback model.">
+<meta property="og:url" content="https://rishichellani.netlify.app/projects/travel-concierge.html">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="../assets/site.css">
+<script defer src="https://cloud.umami.is/script.js" data-website-id="9c3e5e9e-6ef7-4074-9be3-7f592754f417"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="/">Rishi Chellani</a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu">
+      <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#i-menu"/></svg>
+    </button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="/#work" aria-current="page">Work</a></li>
+      <li><a href="/#videos">Videos</a></li>
+      <li><a href="/#services">Services</a></li>
+      <li><a href="/#about">About</a></li>
+      <li><a class="btn btn-primary" href="/#contact">Let's talk</a></li>
+    </ul>
+  </div>
+</header>
+<main id="main">
+  <div class="wrap">
+    <p class="crumb"><a href="/#work"><svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#i-arrow-left"/></svg> All work</a></p>
+    <div class="case-hero">
+      <p class="eyebrow">Generative AI app · Case study</p>
+      <h1>AI Travel Concierge</h1>
+      <p class="lede">Enter a destination, travelers, duration, budget, focus and must-do list, and get a full day-by-day itinerary. Curated local knowledge grounds the plan, so the model works from real tips instead of guessing.</p>
+      <dl class="facts">
+        <div><dt>Role</dt><dd>Designer and builder</dd></div>
+        <div><dt>Stack</dt><dd>Python, Streamlit, Gemini, Groq / Llama fallback, Docker</dd></div>
+        <div><dt>Data</dt><dd>Synthetic, for demonstration</dd></div>
+        <div><dt>Status</dt><dd>Working prototype</dd></div>
+      </dl>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="https://rishichellani-travel-concierge-app-ukagdi.streamlit.app" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#i-external"/></svg> Try the live app</a>
+        <a class="btn btn-ghost" href="https://github.com/rishichellani/travel-concierge" target="_blank" rel="noopener"><svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#i-github"/></svg> View source on GitHub</a>
+      </div>
+    </div>
+
+    <div class="video" data-loom-id="" data-title="AI Travel Concierge walkthrough">
+      <div class="video-empty">
+        <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#i-video"/></svg>
+        <strong>Walkthrough coming soon</strong>
+        <span>Loom recording in progress</span>
+      </div>
+    </div>
+
+    <div class="case-body">
+      <section>
+        <h2>What it does</h2>
+        <p>A sidebar form collects the trip details. The app builds a planning package from agent instructions plus the traveler's requirements and sends it to Gemini to produce the itinerary. Results are also saved to disk.</p>
+      </section>
+
+      <section>
+        <h2>Design choices</h2>
+        <ul>
+          <li><strong>Lightweight retrieval (RAG).</strong> Each supported city has a folder of curated highlights covering food, sights, neighborhoods and practical tips. When the typed destination matches a folder by exact, alias or fuzzy match, those highlights are injected into the prompt as reference material.</li>
+          <li><strong>Easy to extend.</strong> Adding a new city means adding a folder with a highlights file. No code changes.</li>
+          <li><strong>Reliability.</strong> If Gemini errors out, the app falls back to a Groq / Llama model automatically.</li>
+          <li><strong>Deployable anywhere.</strong> It runs locally, in Docker, or on Streamlit Community Cloud with keys held in secrets.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Why it is in my portfolio</h2>
+        <p>It is the smallest of the three projects, and the clearest example of grounding a model in a curated knowledge source with a fallback path. That is the same pattern I apply in the finance agents.</p>
+      </section>
+
+      <section>
+        <h2>More work</h2>
+        <div class="next">
+          <a class="card card-link" href="p-card-reconciler.html"><h3>P-Card &amp; Expense Reconciliation</h3><p>Card statement to ERP journal entry, with AI judging only what rules cannot.</p><span class="more">Read case study <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#i-arrow-right"/></svg></span></a>
+          <a class="card card-link" href="vendor-invoice-recon.html"><h3>Vendor Invoice Reconciliation</h3><p>Audits invoices against POs, contracts and AP policy.</p><span class="more">Read case study <svg class="icon" aria-hidden="true"><use href="../assets/icons.svg#i-arrow-right"/></svg></span></a>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+<footer>
+  <div class="wrap foot-inner">
+    <span>© 2026 Rishi Chellani · AI Enablement Lead · Irvine, CA</span>
+    <a href="/#contact">Get in touch</a>
+  </div>
+</footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>
