@@ -42,6 +42,7 @@
 
 // Contact form (Netlify Forms)
 (function () {
+  const track = (name) => { if (window.umami) window.umami.track(name); };
   const form = document.getElementById('contact-form');
   if (!form) return;
   const msg = document.getElementById('form-msg');
@@ -62,8 +63,10 @@
       form.hidden = true;
       done.hidden = false;
       done.focus();
+      track('Contact form submitted');
     } catch (err) {
       btn.disabled = false;
+      track('Contact form failed');
       msg.className = 'form-msg error';
       msg.textContent = 'That did not send. Please try again, or email me directly at rishi.chellani@gmail.com.';
     }
